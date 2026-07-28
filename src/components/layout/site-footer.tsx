@@ -66,7 +66,9 @@ export function SiteFooter() {
           © {year} {siteConfig.title}. All rights reserved.
         </p>
         <div className="flex gap-4">
-          <span>Privacy</span>
+          <Link href="/privacy" className="hover:text-foreground">
+            Privacy
+          </Link>
           <span>Imprint</span>
         </div>
       </Container>
