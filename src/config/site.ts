@@ -4,7 +4,7 @@ export const siteConfig = {
   description:
     "Engineering the transition from DevSecOps to Agentic Engineering.",
   tagline: "DevSecOps · Agents · Skills · Specs · Platforms",
-  url: "https://agenticstack.dev",
+  url: "https://agenticstack.eu",
   locale: "en-US",
   keywords: [
     "Agentic Engineering",

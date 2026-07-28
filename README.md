@@ -149,6 +149,25 @@ sites (`code_copied`, `search_opened`, `search_query`) already call it, so
 wiring up a provider later means editing the body of `trackEvent()` once,
 not touching every component that reports an event.
 
+## Security
+
+`src/proxy.ts` (Next's request-interception layer — the file formerly named
+`middleware.ts`) sets a Content-Security-Policy and the standard hardening
+headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
+`Permissions-Policy`, `Strict-Transport-Security`) on every response.
+
+The CSP is `script-src 'self' 'unsafe-inline'`, not the stricter nonce +
+`'strict-dynamic'` pattern Next's own docs recommend. That was tried first
+and rejected after checking a real browser: this Next/Turbopack version
+doesn't thread the nonce onto its own `<script src>` chunk tags, and a bare
+`'self'` blocks the unnonced inline `<script>` tags App Router uses for the
+RSC hydration payload — both broke real functionality (the search dialog
+stopped opening). `'unsafe-inline'` still blocks the more common real threat
+for a static-content site like this — an attacker-injected
+`<script src="https://evil.example/x.js">` — since only `'self'` script
+hosts are allowlisted; it just can't additionally block inline script
+execution.
+
 ## Deployment
 
 The app is a standard Next.js application with no provider-specific APIs,
