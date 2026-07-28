@@ -66,10 +66,12 @@ export function SiteFooter() {
           © {year} {siteConfig.title}. All rights reserved.
         </p>
         <div className="flex gap-4">
-          <Link href="/privacy" className="hover:text-foreground">
-            Privacy
+          <Link href="/impressum" className="hover:text-foreground">
+            Impressum
           </Link>
-          <span>Imprint</span>
+          <Link href="/datenschutz" className="hover:text-foreground">
+            Datenschutz
+          </Link>
         </div>
       </Container>
     </footer>
