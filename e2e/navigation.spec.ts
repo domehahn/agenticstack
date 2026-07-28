@@ -17,7 +17,7 @@ test("primary navigation moves between top-level sections", async ({
   await expect(page).toHaveURL("/topics");
   await expect(page.getByRole("heading", { name: "Topics", exact: true })).toBeVisible();
 
-  await page.getByRole("link", { name: "agenticstack" }).click();
+  await page.getByRole("link", { name: "AgenticStack home" }).click();
   await expect(page).toHaveURL("/");
 });
 

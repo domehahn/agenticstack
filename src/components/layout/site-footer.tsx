@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GithubIcon } from "@/components/shared/icons";
 
 import { Container } from "@/components/shared/container";
+import { Logo } from "@/components/shared/logo";
 import { footerNavigation } from "@/config/navigation";
 import { siteConfig } from "@/config/site";
 
@@ -14,10 +15,8 @@ export function SiteFooter() {
     <footer className="border-t border-border">
       <Container className="grid gap-10 py-12 sm:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <p className="font-mono text-sm font-semibold lowercase">
-            {siteConfig.name}
-          </p>
-          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+          <Logo className="h-14" />
+          <p className="mt-4 max-w-sm text-sm text-muted-foreground">
             {siteConfig.description}
           </p>
           <div className="mt-4 flex items-center gap-4">

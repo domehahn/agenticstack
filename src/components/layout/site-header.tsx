@@ -4,8 +4,8 @@ import { MobileNav } from "@/components/navigation/mobile-nav";
 import { ThemeToggle } from "@/components/navigation/theme-toggle";
 import { SearchDialog } from "@/components/search/search-dialog";
 import { Container } from "@/components/shared/container";
+import { Logo } from "@/components/shared/logo";
 import { primaryNavigation } from "@/config/navigation";
-import { siteConfig } from "@/config/site";
 import type { SearchDocument } from "@/lib/search";
 
 export function SiteHeader({
@@ -15,12 +15,9 @@ export function SiteHeader({
 }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-sm">
-      <Container className="flex h-16 items-center justify-between">
-        <Link
-          href="/"
-          className="font-mono text-sm font-semibold tracking-tight lowercase"
-        >
-          {siteConfig.name}
+      <Container className="flex h-24 items-center justify-between">
+        <Link href="/" aria-label="AgenticStack home">
+          <Logo className="h-16" />
         </Link>
 
         <nav aria-label="Primary" className="hidden sm:block">
