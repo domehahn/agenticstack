@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/shared/container";
-import { getAllSeriesSlugs, getSeriesArticles } from "@/lib/content/articles";
+import { getAllSeriesSummaries } from "@/lib/content/articles";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildMetadata({
@@ -11,12 +11,7 @@ export const metadata = buildMetadata({
 });
 
 export default function SeriesIndexPage() {
-  const series = getAllSeriesSlugs()
-    .map((slug) => {
-      const articles = getSeriesArticles(slug);
-      return { slug, title: articles[0]?.series?.title ?? slug, articles };
-    })
-    .filter((s) => s.articles.length > 0);
+  const series = getAllSeriesSummaries();
 
   return (
     <Container className="py-12 sm:py-16">
@@ -42,7 +37,7 @@ export default function SeriesIndexPage() {
                 </h2>
               </Link>
               <p className="mt-1 text-sm text-muted-foreground">
-                {s.articles.length} parts
+                {s.count} parts
               </p>
             </li>
           ))}

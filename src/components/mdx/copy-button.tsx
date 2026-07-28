@@ -3,6 +3,8 @@
 import { Check, Copy } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { trackEvent } from "@/lib/analytics";
+
 export function CopyButton({ children }: { children: React.ReactNode }) {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
@@ -11,6 +13,7 @@ export function CopyButton({ children }: { children: React.ReactNode }) {
     const text = preRef.current?.textContent ?? "";
     await navigator.clipboard.writeText(text);
     setCopied(true);
+    trackEvent({ name: "code_copied" });
     setTimeout(() => setCopied(false), 1500);
   }
 

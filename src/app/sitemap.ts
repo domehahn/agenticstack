@@ -32,8 +32,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
-  const tagRoutes = getAllTags().map(({ tag }) => ({
-    url: `${siteConfig.url}/tags/${encodeURIComponent(tag.toLowerCase())}`,
+  const tagRoutes = getAllTags().map(({ slug }) => ({
+    url: `${siteConfig.url}/tags/${slug}`,
     lastModified: new Date(),
   }));
 

@@ -1,4 +1,4 @@
-# AboutAgentic
+# AgenticStack
 
 A production-grade technical publication about agentic engineering,
 DevSecOps, and the systems underneath both. Built with Next.js (App Router),
@@ -117,16 +117,37 @@ npm run build        # production build (also runs the TypeScript check)
 npm run start        # serve the production build
 npm run lint          # ESLint
 npx tsc --noEmit       # TypeScript, standalone
+npm run test           # Vitest — lib/content, lib/search, lib/utils
+npm run test:e2e        # Playwright — nav, theme, search, article, mobile menu
 ```
+
+Playwright's config builds and serves a production instance on port 3200
+before running (`webServer` in `playwright.config.ts`), so `npm run test:e2e`
+works standalone without a dev server already running.
 
 ## SEO
 
 Every page builds its metadata through `lib/seo/metadata.ts` (canonical URL,
-OpenGraph, Twitter card) so there's one place that defines the shape of page
-metadata. `lib/seo/json-ld.ts` provides `WebSite`, `Blog`, `BlogPosting`, and
-`BreadcrumbList` structured data. `sitemap.ts`, `robots.ts`, and `feed.xml`
-are generated from the same content index as the pages themselves — adding
-an article updates all three automatically.
+OpenGraph, Twitter card, optional `noIndex`) so there's one place that
+defines the shape of page metadata. `lib/seo/json-ld.ts` provides `WebSite`,
+`Blog`, `BlogPosting`, and `BreadcrumbList` structured data. `sitemap.ts`,
+`robots.ts`, and `feed.xml` are generated from the same content index as the
+pages themselves — adding an article updates all three automatically.
+
+Social preview images are generated per-request from `lib/seo/og-image.tsx`
+via Next's file conventions: `app/opengraph-image.tsx` is the site-wide
+default (inherited by every page unless overridden), and
+`app/blog/[slug]/opengraph-image.tsx` renders a per-article card (topic,
+title, author, date). No static image asset to keep in sync.
+
+## Analytics
+
+`lib/analytics/index.ts` exports a single `trackEvent()` function — the only
+integration point in the app. It's a no-op while `features.analytics` is
+`false` (the default: no vendor configured, nothing loaded). A few real call
+sites (`code_copied`, `search_opened`, `search_query`) already call it, so
+wiring up a provider later means editing the body of `trackEvent()` once,
+not touching every component that reports an event.
 
 ## Deployment
 

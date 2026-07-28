@@ -6,6 +6,7 @@ import readingTime from "reading-time";
 import { getAuthor } from "@/config/authors";
 import { getTopicBySlug, topics as topicDefinitions } from "@/config/topics";
 import { frontmatterSchema } from "@/lib/content/schema";
+import { slugify } from "@/lib/utils/slug";
 import type { Article, ArticleSummary, SeriesInfo } from "@/types/content";
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
@@ -106,13 +107,13 @@ export function getArticlesByTopic(topicSlug: string): ArticleSummary[] {
   );
 }
 
-export function getArticlesByTag(tag: string): ArticleSummary[] {
+export function getArticlesByTagSlug(tagSlug: string): ArticleSummary[] {
   return getAllArticles().filter((a) =>
-    a.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
+    a.tags.some((t) => slugify(t) === tagSlug),
   );
 }
 
-export function getAllTags(): { tag: string; count: number }[] {
+export function getAllTags(): { tag: string; slug: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const article of getAllArticles()) {
     for (const tag of article.tags) {
@@ -120,7 +121,7 @@ export function getAllTags(): { tag: string; count: number }[] {
     }
   }
   return Array.from(counts.entries())
-    .map(([tag, count]) => ({ tag, count }))
+    .map(([tag, count]) => ({ tag, slug: slugify(tag), count }))
     .sort((a, b) => b.count - a.count);
 }
 
@@ -183,4 +184,17 @@ export function getSeriesArticles(seriesSlug: string): ArticleSummary[] {
 
 export function getSeriesTitle(seriesSlug: string): string | undefined {
   return getSeriesArticles(seriesSlug)[0]?.series?.title;
+}
+
+export function getAllSeriesSummaries(): {
+  slug: string;
+  title: string;
+  count: number;
+}[] {
+  return getAllSeriesSlugs()
+    .map((slug) => {
+      const articles = getSeriesArticles(slug);
+      return { slug, title: articles[0]?.series?.title ?? slug, count: articles.length };
+    })
+    .filter((s) => s.count > 0);
 }

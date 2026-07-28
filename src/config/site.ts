@@ -1,11 +1,10 @@
 export const siteConfig = {
-  name: "aboutagentic",
-  title: "AboutAgentic",
+  name: "agenticstack",
+  title: "AgenticStack",
   description:
     "Engineering the transition from DevSecOps to Agentic Engineering.",
   tagline: "DevSecOps · Agents · Skills · Specs · Platforms",
-  url: "https://aboutagentic.dev",
-  ogImage: "/og/default.png",
+  url: "https://agenticstack.dev",
   locale: "en-US",
   keywords: [
     "Agentic Engineering",
@@ -24,7 +23,7 @@ export const siteConfig = {
     "Application Security",
   ],
   links: {
-    github: "https://github.com/aboutagentic",
+    github: "https://github.com/domehahn/agenticstack",
     linkedin: undefined as string | undefined,
     rss: "/feed.xml",
   },

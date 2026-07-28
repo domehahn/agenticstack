@@ -33,10 +33,10 @@ export default function TagsPage() {
         </p>
       ) : (
         <ul className="mt-8 flex flex-wrap gap-3">
-          {tags.map(({ tag, count }) => (
-            <li key={tag}>
+          {tags.map(({ tag, slug, count }) => (
+            <li key={slug}>
               <Link
-                href={`/tags/${encodeURIComponent(tag.toLowerCase())}`}
+                href={`/tags/${slug}`}
                 className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-accent hover:text-accent"
               >
                 {tag} <span className="text-muted-foreground">{count}</span>

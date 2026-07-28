@@ -62,6 +62,14 @@ const b = 2; // highlighted
 ```
 ````
 
+Footnotes use standard Markdown footnote syntax (via `remark-gfm`):
+
+```markdown
+A claim that needs a citation.[^1]
+
+[^1]: The citation itself, rendered in a "Footnotes" section at the bottom.
+```
+
 ## Adding a new topic
 
 Topics are a curated, central list (not freeform like tags). Add a new one in

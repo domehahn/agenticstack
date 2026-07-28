@@ -8,6 +8,7 @@ export const metadata = buildMetadata({
   title: "Search",
   description: "Search articles by title, description, topic, or tag.",
   path: "/search",
+  noIndex: true,
 });
 
 export default async function SearchPage({

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 import { searchDocuments } from "@/lib/search/query";
 import type { SearchDocument } from "@/lib/search/types";
 
@@ -47,10 +48,17 @@ export function SearchDialog({
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
-    if (!next) setQuery("");
+    if (next) trackEvent({ name: "search_opened" });
+    else setQuery("");
   }
 
   function goTo(slug: string) {
+    if (query) {
+      trackEvent({
+        name: "search_query",
+        properties: { query, resultCount: results.length },
+      });
+    }
     handleOpenChange(false);
     router.push(`/blog/${slug}`);
   }
@@ -62,7 +70,7 @@ export function SearchDialog({
         variant="outline"
         size="sm"
         className="hidden items-center gap-2 text-muted-foreground sm:inline-flex"
-        onClick={() => setOpen(true)}
+        onClick={() => handleOpenChange(true)}
         aria-label="Open search"
       >
         <Search className="h-3.5 w-3.5" aria-hidden="true" />
@@ -76,7 +84,7 @@ export function SearchDialog({
         variant="ghost"
         size="icon"
         className="sm:hidden"
-        onClick={() => setOpen(true)}
+        onClick={() => handleOpenChange(true)}
         aria-label="Open search"
       >
         <Search className="h-4 w-4" aria-hidden="true" />
@@ -86,7 +94,7 @@ export function SearchDialog({
         open={open}
         onOpenChange={handleOpenChange}
         label="Search articles"
-        className="fixed inset-0 z-50"
+        contentClassName="fixed inset-0 z-50"
         shouldFilter={false}
       >
         <div

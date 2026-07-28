@@ -116,8 +116,13 @@
   }
 }
 
-@layer components {
-  .prose-article {
+/*
+ * Deliberately unlayered: @tailwindcss/typography generates `.prose` rules
+ * in the utilities layer, which always wins over @layer components in the
+ * cascade regardless of source order. These overrides must stay outside
+ * any @layer to take precedence over the plugin's own color defaults.
+ */
+.prose-article {
     --tw-prose-body: var(--foreground);
     --tw-prose-headings: var(--foreground);
     --tw-prose-lead: var(--muted-foreground);
@@ -222,9 +227,25 @@
     padding: 0.1em 0.2em;
   }
 
-  .heading-anchor-link {
+  .prose-article [data-footnote-ref] {
+    color: var(--accent);
     text-decoration: none;
-    color: inherit;
-    scroll-margin-top: 6rem;
+    font-weight: 600;
   }
+
+  .prose-article [data-footnotes] {
+    margin-top: 3rem;
+    font-size: 0.875em;
+    color: var(--muted-foreground);
+  }
+
+  .prose-article [data-footnotes] a.data-footnote-backref {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+.heading-anchor-link {
+  text-decoration: none;
+  color: inherit;
+  scroll-margin-top: 6rem;
 }

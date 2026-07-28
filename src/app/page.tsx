@@ -5,6 +5,7 @@ import { FeaturedArticle } from "@/components/blog/featured-article";
 import { Container } from "@/components/shared/container";
 import { siteConfig } from "@/config/site";
 import {
+  getAllSeriesSummaries,
   getFeaturedArticle,
   getLatestArticles,
   getTopicsWithCounts,
@@ -21,6 +22,7 @@ export default function HomePage() {
   const featured = getFeaturedArticle();
   const latest = getLatestArticles(6, featured?.slug);
   const topics = getTopicsWithCounts();
+  const series = getAllSeriesSummaries();
 
   return (
     <Container className="py-12 sm:py-16">
@@ -92,6 +94,39 @@ export default function HomePage() {
           ))}
         </ul>
       </section>
+
+      {series.length > 0 && (
+        <section className="mt-16" aria-labelledby="series-heading">
+          <div className="flex items-baseline justify-between">
+            <h2
+              id="series-heading"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              Selected series
+            </h2>
+            <Link
+              href="/series"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              View all
+            </Link>
+          </div>
+          <ul className="mt-5 flex flex-col gap-4">
+            {series.slice(0, 3).map((s) => (
+              <li key={s.slug}>
+                <Link href={`/series/${s.slug}`} className="group block">
+                  <p className="font-medium group-hover:text-accent">
+                    {s.title}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {s.count} {s.count === 1 ? "part" : "parts"}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mt-16 border-t border-border pt-10">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

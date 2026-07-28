@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 
 import { ArticleList } from "@/components/blog/article-list";
 import { Container } from "@/components/shared/container";
-import { getAllTags, getArticlesByTag } from "@/lib/content/articles";
+import { getAllTags, getArticlesByTagSlug } from "@/lib/content/articles";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
-  return getAllTags().map(({ tag }) => ({ tag: tag.toLowerCase() }));
+  return getAllTags().map(({ slug }) => ({ tag: slug }));
 }
 
 export async function generateMetadata({
@@ -14,11 +14,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ tag: string }>;
 }) {
-  const { tag } = await params;
+  const { tag: tagSlug } = await params;
+  const knownTag = getAllTags().find((t) => t.slug === tagSlug);
+  if (!knownTag) return {};
+
   return buildMetadata({
-    title: `#${tag}`,
-    description: `Articles tagged with ${tag}.`,
-    path: `/tags/${tag}`,
+    title: `#${knownTag.tag}`,
+    description: `Articles tagged with ${knownTag.tag}.`,
+    path: `/tags/${knownTag.slug}`,
   });
 }
 
@@ -27,12 +30,11 @@ export default async function TagPage({
 }: {
   params: Promise<{ tag: string }>;
 }) {
-  const { tag } = await params;
-  const articles = getArticlesByTag(tag);
-  const knownTag = getAllTags().find(
-    (t) => t.tag.toLowerCase() === tag.toLowerCase(),
-  );
+  const { tag: tagSlug } = await params;
+  const knownTag = getAllTags().find((t) => t.slug === tagSlug);
   if (!knownTag) notFound();
+
+  const articles = getArticlesByTagSlug(tagSlug);
 
   return (
     <Container className="py-12 sm:py-16">
