@@ -36,7 +36,8 @@ src/
 │   ├── mdx/             # Components usable inside article bodies
 │   ├── ui/              # Generic primitives (Button, …)
 │   └── shared/          # Container, icons — no domain knowledge
-├── content/blog/        # Your articles live here. See its README.
+├── content/blog/        # Git submodule → github.com/domehahn/agentic-devsecops.
+│                          Your articles live here. See its README.
 ├── lib/
 │   ├── content/          # articles.ts: reads + validates + indexes MDX
 │   ├── search/           # Split server/client: build (fs) vs query (pure)
@@ -76,16 +77,41 @@ src/
 
 ## Adding articles
 
+`content/blog` is a git submodule pointing at
+[`domehahn/agentic-devsecops`](https://github.com/domehahn/agentic-devsecops)
+— articles live in their own repo, independent of the app. `lib/content/articles.ts`
+doesn't know or care that it's a submodule; it just reads whatever `.mdx`
+files are present at `content/blog/*.mdx`.
+
+Cloning this repo for the first time:
+
+```bash
+git clone --recurse-submodules git@github.com:domehahn/agenticstack.git
+# or, if you already cloned without that flag:
+git submodule update --init
+```
+
 Publishing an article is: create one `.mdx` file. Nothing else.
 
 ```bash
-cp content/blog/_template.mdx content/blog/my-new-article.mdx
+cd content/blog
+cp _template.mdx my-new-article.mdx
+# edit, then commit + push inside content/blog (it's its own git repo)
+git add my-new-article.mdx && git commit -m "Add my-new-article" && git push
+cd ../..
+git add content/blog && git commit -m "Bump content submodule"
 ```
 
 The filename becomes the URL slug (`/blog/my-new-article`). Fill in the
 frontmatter, write the body, set `draft: false`. Full frontmatter reference,
 available MDX components, and code block syntax are documented in
 [`content/blog/README.md`](content/blog/README.md).
+
+The last `git commit` in the app repo just bumps the submodule's pinned
+commit SHA — that's what makes a new article show up after deploying the
+app repo. Deployment platforms (Vercel, Cloudflare Pages, …) need
+"include submodules" enabled in their git checkout settings, or the build
+will see an empty `content/blog` directory.
 
 ### Adding a topic
 

@@ -1,0 +1,3 @@
+[submodule "content/blog"]
+	path = content/blog
+	url = git@github.com:domehahn/agentic-devsecops.git
