@@ -9,7 +9,7 @@ export type Author = {
 export const authors: Record<string, Author> = {
   dome: {
     id: "dome",
-    name: "Dome",
+    name: "Dominik Hahn",
     role: "Editor, AgenticStack",
     bio: "Writes about the shift from DevSecOps to agentic, AI-native engineering.",
   },
