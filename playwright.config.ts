@@ -11,7 +11,10 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run build && npm run start -- -p 3200",
+    // wrangler dev (not `next start`, which doesn't exist for a static
+    // export) serves the same `out/` directory the same way Cloudflare's
+    // static-assets layer does in production, including public/_headers.
+    command: "npm run build && npx wrangler dev --port 3200",
     url: "http://localhost:3200",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

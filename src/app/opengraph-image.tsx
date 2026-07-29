@@ -5,6 +5,7 @@ import { OgImage, ogImageContentType, ogImageSize } from "@/lib/seo/og-image";
 
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
+export const dynamic = "force-static";
 
 export default function Image() {
   return new ImageResponse(

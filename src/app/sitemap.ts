@@ -6,7 +6,10 @@ import {
   getAllArticles,
   getAllSeriesSlugs,
   getAllTags,
+  getBlogTotalPages,
 } from "@/lib/content/articles";
+
+export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
@@ -23,6 +26,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
   }));
+
+  const totalBlogPages = getBlogTotalPages();
+  const blogPaginationRoutes = Array.from(
+    { length: Math.max(0, totalBlogPages - 1) },
+    (_, i) => ({
+      url: `${siteConfig.url}/blog/page/${i + 2}`,
+      lastModified: new Date(),
+    }),
+  );
 
   const articleRoutes = getAllArticles().map((article) => ({
     url: `${siteConfig.url}/blog/${article.slug}`,
@@ -46,6 +58,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...staticRoutes,
+    ...blogPaginationRoutes,
     ...articleRoutes,
     ...topicRoutes,
     ...tagRoutes,

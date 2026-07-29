@@ -6,7 +6,13 @@ import { getAllTags, getArticlesByTagSlug } from "@/lib/content/articles";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
-  return getAllTags().map(({ slug }) => ({ tag: slug }));
+  const tags = getAllTags();
+  // A dynamic route with zero generated params breaks `output: export`
+  // (long-standing, still-open Next.js bug — vercel/next.js#61213,
+  // vercel/next.js#71862). Placeholder param + notFound() below is the
+  // community-endorsed workaround.
+  if (tags.length === 0) return [{ tag: "__none__" }];
+  return tags.map(({ slug }) => ({ tag: slug }));
 }
 
 export async function generateMetadata({

@@ -6,7 +6,14 @@ import { getAllSeriesSlugs, getSeriesArticles } from "@/lib/content/articles";
 import { buildMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
-  return getAllSeriesSlugs().map((series) => ({ series }));
+  const slugs = getAllSeriesSlugs();
+  // A dynamic route with zero generated params breaks `output: export`
+  // (long-standing, still-open Next.js bug — vercel/next.js#61213,
+  // vercel/next.js#71862). Placeholder param + notFound() below is the
+  // community-endorsed workaround: generates one harmless static 404 page
+  // instead of failing the entire build when there are no series yet.
+  if (slugs.length === 0) return [{ series: "__none__" }];
+  return slugs.map((series) => ({ series }));
 }
 
 export async function generateMetadata({

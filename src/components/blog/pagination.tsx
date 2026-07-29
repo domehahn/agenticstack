@@ -11,8 +11,9 @@ export function Pagination({
 }) {
   if (totalPages <= 1) return null;
 
-  const prevHref = currentPage <= 2 ? basePath : `${basePath}?page=${currentPage - 1}`;
-  const nextHref = `${basePath}?page=${currentPage + 1}`;
+  const prevHref =
+    currentPage <= 2 ? basePath : `${basePath}/page/${currentPage - 1}`;
+  const nextHref = `${basePath}/page/${currentPage + 1}`;
 
   return (
     <nav

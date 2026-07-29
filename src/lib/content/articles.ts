@@ -193,3 +193,9 @@ export function getAllSeriesSummaries(): {
     })
     .filter((s) => s.count > 0);
 }
+
+export const BLOG_PAGE_SIZE = 20;
+
+export function getBlogTotalPages(): number {
+  return Math.max(1, Math.ceil(getAllArticles().length / BLOG_PAGE_SIZE));
+}

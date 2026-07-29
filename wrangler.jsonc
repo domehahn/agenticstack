@@ -1,30 +1,18 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
   "name": "agenticstack",
   "compatibility_date": "2026-07-29",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  // next-themes' anti-FOUC script embeds its own function source via
-  // .toString() into an inline <script>. esbuild's keep-names transform
-  // (baked into next-themes' published dist, not something we control)
-  // wraps that function body in a call to a `__name` helper that only
-  // exists in a bundled module scope — not in the raw string shipped to
-  // the browser, so it threw `ReferenceError: __name is not defined` on
-  // every page load (confirmed via a real browser against `wrangler dev`).
-  // Disabling keep_names at the wrangler/esbuild level removes the helper
-  // calls entirely. See https://opennext.js.org/cloudflare/howtos/keep_names
-  "keep_names": false,
+  // Pure static site: `next build` (output: "export") writes plain HTML/JS/
+  // CSS to `out/`, served directly by Cloudflare's static-assets layer with
+  // no Worker script and no per-request CPU-time billing at all. There used
+  // to be a full Next.js SSR server here via the OpenNext adapter, but that
+  // meant every request — even ones serving pages we already know are
+  // static — ran through a full Workers CPU budget, tripping the Free
+  // plan's 10ms/request limit (Error 1102) on ordinary page loads. Almost
+  // nothing in this app actually needs per-request server logic, so static
+  // export removes the constraint entirely instead of requiring the Workers
+  // Paid plan just to serve a blog.
   "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "agenticstack"
-    }
-  ],
-  "images": {
-    "binding": "IMAGES"
+    "directory": "out"
   }
 }

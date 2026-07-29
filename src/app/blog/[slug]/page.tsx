@@ -19,7 +19,15 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo/json-ld";
 
 export function generateStaticParams() {
-  return getAllArticles().map((article) => ({ slug: article.slug }));
+  const articles = getAllArticles();
+  // A dynamic route with zero generated params breaks `output: export`
+  // (long-standing, still-open Next.js bug — vercel/next.js#61213,
+  // vercel/next.js#71862). Placeholder param + notFound() below is the
+  // community-endorsed workaround — matters here specifically because this
+  // repo ships with no demo articles, so a fresh clone with only the draft
+  // _template.mdx would otherwise fail to build at all.
+  if (articles.length === 0) return [{ slug: "__none__" }];
+  return articles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({

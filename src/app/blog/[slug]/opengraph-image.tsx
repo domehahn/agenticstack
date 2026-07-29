@@ -1,11 +1,22 @@
 import { ImageResponse } from "next/og";
 
-import { getArticleBySlug } from "@/lib/content/articles";
+import { getAllArticles, getArticleBySlug } from "@/lib/content/articles";
 import { OgImage, ogImageContentType, ogImageSize } from "@/lib/seo/og-image";
 import { formatDate } from "@/lib/utils/dates";
 
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
+export const dynamic = "force-static";
+
+export function generateStaticParams() {
+  const articles = getAllArticles();
+  // A dynamic route with zero generated params breaks `output: export`
+  // (long-standing, still-open Next.js bug — vercel/next.js#61213,
+  // vercel/next.js#71862). Rendering the "Article not found" fallback image
+  // for a placeholder slug is harmless — nothing links to it.
+  if (articles.length === 0) return [{ slug: "__none__" }];
+  return articles.map((article) => ({ slug: article.slug }));
+}
 
 export default async function Image({
   params,

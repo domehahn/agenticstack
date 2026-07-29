@@ -201,11 +201,14 @@ defines the shape of page metadata. `lib/seo/json-ld.ts` provides `WebSite`,
 `robots.ts`, and `feed.xml` are generated from the same content index as the
 pages themselves — adding an article updates all three automatically.
 
-Social preview images are generated per-request from `lib/seo/og-image.tsx`
+Social preview images are generated at build time from `lib/seo/og-image.tsx`
 via Next's file conventions: `app/opengraph-image.tsx` is the site-wide
 default (inherited by every page unless overridden), and
 `app/blog/[slug]/opengraph-image.tsx` renders a per-article card (topic,
-title, author, date). No static image asset to keep in sync.
+title, author, date) for every article via `generateStaticParams`. No static
+image asset to keep in sync, and no server needed to render one at request
+time — `next build`'s static export prerenders each one to a real file
+under `out/`.
 
 ## Analytics
 
@@ -218,26 +221,23 @@ not touching every component that reports an event.
 
 ## Security
 
-`next.config.ts`'s `headers()` sets a Content-Security-Policy and the
-standard hardening headers (`X-Content-Type-Options`, `X-Frame-Options`,
-`Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) on
-every response.
+`public/_headers` sets a Content-Security-Policy and the standard hardening
+headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
+`Permissions-Policy`, `Strict-Transport-Security`) on every response. This is
+Cloudflare's [static-assets headers file](https://developers.cloudflare.com/pages/configuration/headers/)
+convention — `wrangler` copies it into `out/` unchanged, and the static-assets
+layer applies its rules to every matching response, no Worker script
+involved.
 
-This used to live in a `proxy.ts` (Next's request-interception layer, the
-file formerly named `middleware.ts`) with a per-request CSP nonce, but two
-things forced a move to static config:
-
-- The nonce + `'strict-dynamic'` pattern Next's own docs recommend doesn't
-  work on this Next/Turbopack version — it doesn't thread the nonce onto
-  its own `<script src>` chunk tags, so every script got blocked (checked
-  in a real browser, not assumed from docs).
-- Next 16's `proxy.ts` always runs on the Node.js runtime with no opt-out
-  (setting `runtime` in its config throws), which the Cloudflare Workers
-  deployment target (see below) doesn't support for middleware/proxy files.
-
-Once the nonce was dropped there was nothing left that needed to be
-computed per-request, so the header set moved to `next.config.ts`'s static
-`headers()` — same values, no proxy file, no Workers incompatibility.
+Headers used to be computed per-request — first in a `proxy.ts` (Next's
+request-interception layer, formerly `middleware.ts`) with a CSP nonce, then
+in `next.config.ts`'s `headers()` once the nonce was dropped. Both stopped
+being options once the app moved to a static export (see
+[Deployment](#deployment)): `output: "export"` prerenders every route to a
+plain file with no server left to run either at request time, so
+`next.config.ts`'s `headers()` is simply never invoked in the deployed site.
+`public/_headers` is the one mechanism that still applies headers to a
+Cloudflare static-assets deployment with no Worker in front of it.
 
 The CSP is `script-src 'self' 'unsafe-inline'`, not `'unsafe-inline'`-free.
 `'unsafe-inline'` still blocks the more common real threat for a
@@ -250,46 +250,41 @@ execution the way a working nonce setup would.
 
 ### Cloudflare Workers
 
-The app deploys to Cloudflare Workers via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare)
-(`@opennextjs/cloudflare` + `wrangler`, configured in `wrangler.jsonc` and
-`open-next.config.ts`):
+The app deploys as a **pure static site** to Cloudflare's Workers
+static-assets layer — no Worker script, no per-request server, no
+`getCloudflareContext()`/bindings anywhere in the app. `next build` (with
+`output: "export"` in `next.config.ts`) writes plain HTML/JS/CSS to `out/`;
+`wrangler.jsonc` just points `assets.directory` at it:
 
 ```bash
-npm run preview   # build + run once under the real Workers runtime, locally
-npm run deploy     # build + deploy to Cloudflare
+npm run preview   # build + serve out/ once under wrangler, locally
+npm run deploy     # build + deploy out/ to Cloudflare
 ```
 
-`npm run preview` is the one that matters before trusting a deploy — it
-runs the app under `workerd` (the actual Workers runtime via `wrangler`),
-not just `next start`, so runtime-only incompatibilities surface locally
-instead of in production.
+This replaced an earlier setup that ran the app as a full Next.js SSR server
+via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare)
+(`@opennextjs/cloudflare`, a Worker entry point, service bindings, the
+`keep_names: false` esbuild workaround, etc.). That meant *every* request —
+including the ones serving pages that are static and known at build time —
+ran through a full Workers CPU budget, which tripped the Free plan's 10ms
+per-request limit (`Error 1102`) on ordinary page loads. Nothing in this app
+actually needs per-request server logic (see the CSP/headers note in
+[Security](#security) and the OG-image note in [SEO](#seo) for the two
+places that used to assume a server was there), so static export removes the
+constraint entirely — no Workers Paid plan needed just to serve a blog.
 
 Before deploying:
 
 - Set `site.url` in `src/config/site.ts` to the production domain — it
   backs canonical URLs, the sitemap, the RSS feed, and JSON-LD.
-- Connect the domain to the Cloudflare account and Worker (DNS record +
-  custom domain binding) via the Cloudflare dashboard — that's an
-  account-level step outside this repo.
-
-Everything above (content pipeline, MDX compilation, the CSP header
-location) exists in its current shape because of things that only surfaced
-by actually running the built app under `wrangler dev` — not because the
-docs said so upfront. One more, smaller one: `wrangler.jsonc` sets
-`"keep_names": false`. Without it, `next-themes`' anti-flash-of-wrong-theme
-script (which embeds its own function source via `.toString()` into an
-inline `<script>`) throws `ReferenceError: __name is not defined` in the
-browser on every page — esbuild's keep-names transform is baked into
-`next-themes`' published package at *their* build time, and the helper it
-calls only exists in a bundled module scope, not in a raw string dumped
-into HTML. This is a [known](https://github.com/opennextjs/opennextjs-cloudflare/issues/1249)
-OpenNext/esbuild interaction; `keep_names: false` is the [documented fix](https://opennext.js.org/cloudflare/howtos/keep_names).
+- Connect the domain to the Cloudflare account and the `agenticstack`
+  Pages/Workers static-assets project (DNS record + custom domain binding)
+  via the Cloudflare dashboard — that's an account-level step outside this
+  repo.
 
 ### Other hosts
 
-Nothing about the app is Cloudflare-specific at the code level (no
-`getCloudflareContext()` calls, no bindings required for the app to
-function) beyond the deployment config files above, so it also runs as a
-standard Next.js app on any Node-compatible host: `next build && next start`,
-Vercel, a container, etc. — the OpenNext/wrangler files can simply be
-ignored in that case.
+Nothing about the app is Cloudflare-specific at the code level, so `out/`
+(the output of `next build`) is also just a static site: any static host —
+Vercel, Netlify, GitHub Pages, a plain CDN — can serve it directly, and the
+`wrangler.jsonc` file can simply be ignored in that case.
