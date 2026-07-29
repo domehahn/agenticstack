@@ -7,7 +7,6 @@ import { RelatedArticles } from "@/components/blog/related-articles";
 import { SeriesNavigation } from "@/components/blog/series-navigation";
 import { TableOfContents } from "@/components/blog/table-of-contents";
 import { Container } from "@/components/shared/container";
-import { ArticleContent } from "@/lib/content/mdx";
 import {
   getAdjacentArticles,
   getAllArticles,
@@ -59,6 +58,14 @@ export default async function ArticlePage({
     ? getSeriesArticles(article.series.slug)
     : [];
 
+  // Dynamic import with a template-literal path so the bundler can
+  // statically discover every content/blog/*.mdx file and compile it at
+  // build time (no runtime MDX compilation — that path relies on eval(),
+  // which Cloudflare Workers disallows; see content/blog's authoring docs).
+  const { default: MDXContent } = await import(
+    `../../../../content/blog/${article.slug}.mdx`
+  );
+
   return (
     <>
       <ReadingProgress targetId="article-body" />
@@ -96,7 +103,7 @@ export default async function ArticlePage({
             )}
 
             <div className="prose prose-article">
-              <ArticleContent source={article.content} />
+              <MDXContent />
             </div>
 
             {article.series && seriesArticles.length > 1 && (

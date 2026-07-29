@@ -21,6 +21,9 @@
 /.next/
 /out/
 
+# generated from content/blog at build/dev time — see scripts/generate-content-manifest.mjs
+/src/lib/content/generated/
+
 # production
 /build
 
@@ -40,6 +43,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare / opennext
+.open-next
+.wrangler
+.dev.vars*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+cloudflare-env.d.ts

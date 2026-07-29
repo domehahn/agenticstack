@@ -1,38 +1,33 @@
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
-import readingTime from "reading-time";
-
 import { getAuthor } from "@/config/authors";
 import { getTopicBySlug, topics as topicDefinitions } from "@/config/topics";
-import { frontmatterSchema } from "@/lib/content/schema";
+import generatedArticles from "@/lib/content/generated/articles.json";
 import { slugify } from "@/lib/utils/slug";
 import type { Article, ArticleSummary, SeriesInfo } from "@/types/content";
 
-const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
+// Raw shape written by scripts/generate-content-manifest.mjs. Frontmatter is
+// already validated at generation time (build/dev start), not here.
+type GeneratedArticle = {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  updated?: string;
+  author: string;
+  topics: string[];
+  tags: string[];
+  featured: boolean;
+  draft: boolean;
+  series?: SeriesInfo;
+  readingTime: string;
+  content: string;
+};
 
 let cache: Article[] | null = null;
 
 function readArticles(): Article[] {
   if (cache) return cache;
 
-  const files = fs
-    .readdirSync(CONTENT_DIR)
-    .filter((file) => file.endsWith(".mdx"));
-
-  const articles = files.map((file) => {
-    const slug = file.replace(/\.mdx$/, "");
-    const raw = fs.readFileSync(path.join(CONTENT_DIR, file), "utf8");
-    const { data, content } = matter(raw);
-
-    const parsed = frontmatterSchema.safeParse(data);
-    if (!parsed.success) {
-      throw new Error(
-        `Invalid frontmatter in content/blog/${file}: ${parsed.error.message}`,
-      );
-    }
-    const fm = parsed.data;
-
+  const articles = (generatedArticles as GeneratedArticle[]).map((fm) => {
     const resolvedTopics = fm.topics
       .map((slugOrName) => {
         const bySlug = getTopicBySlug(slugOrName);
@@ -44,7 +39,7 @@ function readArticles(): Article[] {
       .filter((t): t is NonNullable<typeof t> => Boolean(t));
 
     const article: Article = {
-      slug,
+      slug: fm.slug,
       title: fm.title,
       description: fm.description,
       date: fm.date,
@@ -52,11 +47,11 @@ function readArticles(): Article[] {
       author: getAuthor(fm.author.toLowerCase()),
       topics: resolvedTopics,
       tags: fm.tags,
-      featured: fm.featured ?? false,
-      draft: fm.draft ?? false,
-      series: fm.series as SeriesInfo | undefined,
-      readingTime: readingTime(content).text,
-      content,
+      featured: fm.featured,
+      draft: fm.draft,
+      series: fm.series,
+      readingTime: fm.readingTime,
+      content: fm.content,
     };
 
     return article;

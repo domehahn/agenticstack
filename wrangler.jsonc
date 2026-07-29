@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "agenticstack",
+  "compatibility_date": "2026-07-29",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // next-themes' anti-FOUC script embeds its own function source via
+  // .toString() into an inline <script>. esbuild's keep-names transform
+  // (baked into next-themes' published dist, not something we control)
+  // wraps that function body in a call to a `__name` helper that only
+  // exists in a bundled module scope — not in the raw string shipped to
+  // the browser, so it threw `ReferenceError: __name is not defined` on
+  // every page load (confirmed via a real browser against `wrangler dev`).
+  // Disabling keep_names at the wrangler/esbuild level removes the helper
+  // calls entirely. See https://opennext.js.org/cloudflare/howtos/keep_names
+  "keep_names": false,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "agenticstack"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  }
+}
