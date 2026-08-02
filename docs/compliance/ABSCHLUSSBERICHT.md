@@ -25,12 +25,11 @@ Die umfassende Compliance- und Sicherheitsüberholung für die Produktions-Websi
 ### ⚠️ Manuelle Nacharbeit erforderlich
 
 - ⚠️ Cloudflare-Konfiguration (benötigt API-Token oder Dashboard-Zugriff)
-- ⚠️ DNS-Konfiguration (SPF/DKIM/DMARC - exakte Befehle siehe unten)
+- ⚠️ DNS-Konfiguration (No-Mail-Domain: Null MX, SPF `-all`, DMARC `p=reject` - siehe [DNS-KONFIGURATION.md](./DNS-KONFIGURATION.md))
 - ⚠️ E2E-Tests (6 von 26 Tests fehlgeschlagen - pre-existierende Probleme)
 
 ### 📋 Offene Entscheidungen
 
-- 📋 E-Mail-Provider-Wahl (Gmail wird dokumentiert, alternative DPA unklar)
 - 📋 Zweite Kontaktmethode (nur E-Mail dokumentiert)
 - 📋 Cloudflare DPA-Review (Link bereitgestellt, Prüfung empfohlen)
 
@@ -272,59 +271,56 @@ npm run cloudflare:apply -- --confirm-zone=agenticstack.eu
 | Always Use HTTPS | Aktiviert | SSL/TLS → Edge Certificates | Verschlüsselung erzwingen |
 | SSL/TLS Min Version | TLS 1.2 | SSL/TLS → Edge Certificates | Sichere TLS-Version |
 
-### 2.3 DNS-Konfiguration (SPF/DKIM/DMARC)
+### 2.3 DNS-Konfiguration (No-Mail-Domain)
 
-**Aktueller Zustand:** E-Mail wird über Gmail gesendet/empfangen (aboutdevops@gmail.com)
+**Aktueller Zustand:** E-Mail wird über privates Gmail-Postfach gesendet/empfangen (`aboutdevops@gmail.com`)
 
-**Empfohlene DNS-Records:**
+**Wichtige Erkenntnis:**
+- Es wird **keine** E-Mail-Adresse unter `@agenticstack.eu` verwendet (z.B. `kontakt@agenticstack.eu`)
+- `aboutdevops@gmail.com` ist eine **private Gmail-Adresse** (kein Google Workspace)
+- Daher sind **keine** Google-SPF-/DKIM-/MX-Einträge für `agenticstack.eu` erforderlich
 
-#### SPF (Sender Policy Framework):
+**Empfohlene Konfiguration: No-Mail-Domain (RFC 7505)**
 
-```dns
-@   TXT   "v=spf1 include:_spf.google.com ~all"
-```
+Die Domain sollte als **No-Mail-Domain** konfiguriert werden, um Phishing und Spam mit gefälschten `@agenticstack.eu`-Absendern zu verhindern.
 
-→ **Nur Gmail ist autorisiert, E-Mails für @agenticstack.eu zu senden.**
-
-#### DKIM (DomainKeys Identified Mail):
-
-**Voraussetzung:** Gmail DKIM muss in Google Workspace/Gmail konfiguriert sein.
-
-Falls kein Custom-DKIM konfiguriert ist: Gmail signiert mit `@gmail.com` DKIM.
-
-**Falls Google Workspace verwendet wird:**
-
-1. Google Admin Console → Apps → Google Workspace → Gmail → Authenticate email
-2. DKIM-Key generieren
-3. DNS-Record hinzufügen (z.B.):
+**Erforderliche DNS-Einträge:**
 
 ```dns
-google._domainkey   TXT   "v=DKIM1; k=rsa; p=<PUBLIC_KEY_FROM_GOOGLE>"
-```
-
-#### DMARC (Domain-based Message Authentication):
-
-```dns
-_dmarc   TXT   "v=DMARC1; p=quarantine; rua=mailto:aboutdevops@gmail.com; pct=100"
+agenticstack.eu.          MX   0 .
+agenticstack.eu.          TXT  "v=spf1 -all"
+_dmarc.agenticstack.eu.   TXT  "v=DMARC1; p=reject; sp=reject; pct=100; adkim=s; aspf=s"
 ```
 
 **Bedeutung:**
-- `p=quarantine` - Nicht-authentifizierte E-Mails in Spam verschieben
-- `rua=mailto:aboutdevops@gmail.com` - Aggregierte Reports an diese Adresse
-- `pct=100` - Policy auf 100% der E-Mails anwenden
+- **Null MX (`0 .`)**: Domain akzeptiert keine E-Mails (RFC 7505)
+- **SPF `-all`**: Kein Server darf E-Mails von `@agenticstack.eu` versenden
+- **DMARC `p=reject`**: Gefälschte Nachrichten werden abgelehnt
+
+**Cloudflare-Konfiguration:**
+1. **Email Routing deaktivieren** (Compute → Email Service → Email Routing)
+2. **Bestehende MX-Einträge entfernen** (DNS → Records)
+3. **Neue DNS-Einträge anlegen** (siehe oben)
+
+**Detaillierte Anleitung:** Siehe [DNS-KONFIGURATION.md](./DNS-KONFIGURATION.md)
 
 **Validierung nach DNS-Änderungen:**
 
 ```bash
-dig TXT agenticstack.eu             # SPF prüfen
-dig TXT google._domainkey.agenticstack.eu  # DKIM prüfen
-dig TXT _dmarc.agenticstack.eu      # DMARC prüfen
+dig MX agenticstack.eu +short             # Erwartung: "0 ."
+dig TXT agenticstack.eu +short            # Erwartung: "v=spf1 -all"
+dig TXT _dmarc.agenticstack.eu +short     # Erwartung: DMARC mit p=reject
 ```
 
 **Online-Tools:**
 - SPF: https://mxtoolbox.com/spf.aspx
-- DKIM: https://mxtoolbox.com/dkim.aspx
 - DMARC: https://mxtoolbox.com/dmarc.aspx
+
+**Auswirkungen:**
+- ✅ Website `agenticstack.eu` bleibt vollständig erreichbar
+- ✅ Gmail `aboutdevops@gmail.com` funktioniert unverändert
+- 🛡️ Phishing mit `@agenticstack.eu`-Absendern wird verhindert
+- ⚠️ Keine E-Mails an/von `@agenticstack.eu` möglich (beabsichtigt)
 
 ---
 
@@ -332,16 +328,13 @@ dig TXT _dmarc.agenticstack.eu      # DMARC prüfen
 
 ### 3.1 E-Mail-Provider-Klarstellung
 
-**Aktueller Zustand:** Gmail (aboutdevops@gmail.com) wird dokumentiert.
+**Status: ✅ Geklärt**
 
-**Fragen:**
-1. Ist aboutdevops@gmail.com ein privates Gmail-Konto oder Google Workspace?
-2. Falls privat: Gibt es einen Auftragsverarbeitungsvertrag (DPA) mit Google?
-3. Falls nein: Ist eine alternative E-Mail-Lösung gewünscht (z.B. Mailbox.org, Posteo)?
-
-**Empfehlung:**
-- **Google Workspace:** DPA verfügbar, DKIM/SPF/DMARC einfach konfigurierbar
-- **Alternative:** Deutsche E-Mail-Provider (Mailbox.org, Posteo) für volle EU-Kontrolle
+**Ergebnis:**
+- Es wird ein **privates Gmail-Postfach** (`aboutdevops@gmail.com`) verwendet – **kein** Google Workspace
+- Datenschutzerklärung entsprechend angepasst (Abschnitt 8)
+- DNS-Konfiguration als **No-Mail-Domain** (siehe [DNS-KONFIGURATION.md](./DNS-KONFIGURATION.md))
+- Keine Google-SPF-/DKIM-/MX-Einträge für `agenticstack.eu` erforderlich
 
 ### 3.2 Zweite Kontaktmethode
 
@@ -446,18 +439,20 @@ npm run build
 - [ ] SSL/TLS Min Version ≥ TLS 1.2
 - [ ] `npm run production:audit` erfolgreich
 
-### Post-Deployment (DNS)
+### Post-Deployment (DNS - No-Mail-Domain)
 
-- [ ] SPF-Record hinzugefügt und validiert
-- [ ] DKIM-Record hinzugefügt (falls Google Workspace)
-- [ ] DMARC-Record hinzugefügt und validiert
-- [ ] MXToolbox-Checks erfolgreich
+- [ ] Cloudflare Email Routing deaktiviert
+- [ ] Bestehende MX-Einträge entfernt
+- [ ] Null MX (`MX 0 .`) hinzugefügt und validiert
+- [ ] SPF `-all` hinzugefügt und validiert
+- [ ] DMARC `p=reject` hinzugefügt und validiert
+- [ ] MXToolbox-Checks erfolgreich (SPF, DMARC)
+
+**Detaillierte Anleitung:** [DNS-KONFIGURATION.md](./DNS-KONFIGURATION.md)
 
 ### Post-Deployment (Monitoring)
 
 - [ ] Kalender-Erinnerung: security.txt Renewal vor 2027-07-01
-- [ ] Cloudflare Analytics prüfen (kein Tracking, nur grundlegende Metriken)
-- [ ] DMARC Reports prüfen (aboutdevops@gmail.com)
 - [ ] AI Disclosure auf neuen Artikeln ab 2026-08-02 testen
 
 ---
@@ -473,10 +468,9 @@ npm run build
 
 ### 🟡 Wichtig (diese Woche)
 
-5. **DNS SPF/DKIM/DMARC konfigurieren** (siehe II.3)
+5. **DNS No-Mail-Domain konfigurieren** (siehe [DNS-KONFIGURATION.md](./DNS-KONFIGURATION.md))
 6. **Cloudflare-Einstellungen manuell prüfen** (Dashboard oder `npm run cloudflare:apply`)
-7. **E-Mail-Provider entscheiden** (siehe III.1)
-8. **Cloudflare DPA reviewen** (siehe III.3)
+7. **Cloudflare DPA reviewen** (siehe III.3)
 
 ### 🟢 Optional (nächste Wochen)
 

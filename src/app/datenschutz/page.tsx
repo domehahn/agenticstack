@@ -245,42 +245,31 @@ export default function DatenschutzPage() {
         <h2>8. Kontaktaufnahme per E-Mail</h2>
 
         <p>
-          Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir die von Ihnen
-          übermittelten Daten. Hierzu gehören insbesondere:
-        </p>
-
-        <ul>
-          <li>Ihre E-Mail-Adresse,</li>
-          <li>Ihr Name, sofern angegeben,</li>
-          <li>Betreff und Inhalt Ihrer Nachricht,</li>
-          <li>weitere von Ihnen übermittelte Informationen und Anhänge,</li>
-          <li>technische Metadaten der E-Mail-Kommunikation.</li>
-        </ul>
-
-        <p>
-          Die Verarbeitung erfolgt zur Bearbeitung und Beantwortung Ihrer
+          Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir Ihre
+          E-Mail-Adresse, den Inhalt Ihrer Nachricht sowie weitere von Ihnen
+          übermittelte Informationen zur Bearbeitung und Beantwortung Ihrer
           Anfrage.
         </p>
 
         <p>
-          Bezieht sich Ihre Anfrage auf die Anbahnung oder Durchführung eines
-          Vertrags, ist Art. 6 Abs. 1 lit. b DSGVO die Rechtsgrundlage. Bei
-          sonstigen Anfragen erfolgt die Verarbeitung auf Grundlage von Art. 6
-          Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse besteht in der
-          sachgerechten Bearbeitung der an uns gerichteten Kommunikation.
+          Für die E-Mail-Kommunikation verwenden wir den Dienst Gmail.
+          Anbieter ist:
         </p>
 
         <p>
-          Die Daten werden gelöscht, sobald Ihre Anfrage abschließend
-          bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten oder
-          berechtigten Gründe für eine weitere Speicherung bestehen.
+          Google Ireland Limited
+          <br />
+          Gordon House, Barrow Street
+          <br />
+          Dublin 4
+          <br />
+          Irland
         </p>
 
         <p>
-          Die veröffentlichte E-Mail-Adresse aboutdevops@gmail.com ist eine
-          Gmail-Adresse. Bei der Kommunikation über diese Adresse können
-          Google-Dienste als Empfänger oder Verarbeiter beteiligt sein.
-          Weitere Informationen finden Sie in der{" "}
+          Im Rahmen der Bereitstellung des Dienstes kann eine Verarbeitung
+          durch verbundene Unternehmen von Google, insbesondere in den USA,
+          stattfinden. Weitere Informationen zur Datenverarbeitung enthält die{" "}
           <a
             href="https://policies.google.com/privacy"
             target="_blank"
@@ -289,6 +278,20 @@ export default function DatenschutzPage() {
             Datenschutzerklärung von Google
           </a>
           .
+        </p>
+
+        <p>
+          Die Verarbeitung erfolgt, soweit Ihre Anfrage der Vertragsanbahnung
+          dient, auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Im Übrigen
+          erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser
+          berechtigtes Interesse besteht in der Bearbeitung der an uns
+          gerichteten Kommunikation.
+        </p>
+
+        <p>
+          Die Daten werden gelöscht, sobald die Anfrage abschließend
+          bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten oder
+          berechtigten Gründe für eine weitere Speicherung bestehen.
         </p>
 
         <h2>9. Externe Links</h2>
