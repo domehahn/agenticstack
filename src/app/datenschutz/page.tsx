@@ -11,11 +11,11 @@ export const metadata = buildMetadata({
 export default function DatenschutzPage() {
   return (
     <Container className="py-12 sm:py-16">
-      <div className="prose prose-article max-w-2xl">
+      <div className="prose prose-article max-w-2xl" lang="de">
         <h1>Datenschutzerklärung</h1>
 
         <p>
-          <strong>Stand: August 2026</strong>
+          <strong>Stand: 2. August 2026</strong>
         </p>
 
         <h2>1. Verantwortlicher</h2>
@@ -35,9 +35,7 @@ export default function DatenschutzPage() {
           Deutschland
           <br />
           E-Mail:{" "}
-          <a href="mailto:aboutdevops@gmail.com">
-            aboutdevops@gmail.com
-          </a>
+          <a href="mailto:aboutdevops@gmail.com">aboutdevops@gmail.com</a>
         </p>
 
         <h2>2. Allgemeine Hinweise zur Datenverarbeitung</h2>
@@ -90,11 +88,43 @@ export default function DatenschutzPage() {
           Internetangebots.
         </p>
 
-        <h2>4. Hosting, Content Delivery und Sicherheit durch Cloudflare</h2>
+        <h2>4. RSS-Feed</h2>
+
+        <p>
+          Diese Website bietet einen RSS-Feed unter der Adresse{" "}
+          <a href="/feed.xml">/feed.xml</a> an. Der RSS-Feed ermöglicht
+          es Ihnen, neue Beiträge automatisch über einen Feed-Reader zu
+          abonnieren und zu lesen, ohne die Website direkt aufrufen zu
+          müssen.
+        </p>
+
+        <p>
+          Der RSS-Feed selbst ist eine öffentlich zugängliche XML-Datei,
+          die Titel, Beschreibungen und Links zu Beiträgen enthält. Er
+          wird beim Aufruf der Website statisch erzeugt und enthält keine
+          personenbezogenen Daten.
+        </p>
+
+        <p>
+          Beim Abruf des RSS-Feeds durch Ihren Feed-Reader werden jedoch
+          die in Abschnitt 3 genannten technischen Zugriffsdaten
+          verarbeitet. Welche weiteren Daten Ihr Feed-Reader oder
+          Feed-Dienst verarbeitet, richtet sich nach dessen
+          Datenschutzbestimmungen. Wir haben hierauf keinen Einfluss.
+        </p>
+
+        <p>
+          Die Verarbeitung der technischen Zugriffsdaten beim Abruf des
+          RSS-Feeds erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.
+          Unser berechtigtes Interesse besteht in der Bereitstellung des
+          Feeds für Abonnenten.
+        </p>
+
+        <h2>5. Hosting, Content Delivery und Sicherheit durch Cloudflare</h2>
 
         <p>
           Diese Website wird über Dienste von Cloudflare bereitgestellt und
-          abgesichert. Cloudflare wird insbesondere als Hosting- und
+          abgesichert. Cloudflare wird als Hosting- und
           Content-Delivery-Infrastruktur, Reverse-Proxy sowie zum Schutz vor
           Angriffen, missbräuchlichen Zugriffen und Überlastung eingesetzt.
         </p>
@@ -172,7 +202,7 @@ export default function DatenschutzPage() {
           .
         </p>
 
-        <h2>5. Server- und Sicherheitsprotokolle</h2>
+        <h2>6. Server- und Sicherheitsprotokolle</h2>
 
         <p>
           Cloudflare kann technische Protokoll- und Sicherheitsdaten
@@ -190,154 +220,14 @@ export default function DatenschutzPage() {
           gelöscht oder anonymisiert.
         </p>
 
-        <h2>6. Cloudflare Web Analytics</h2>
-
-        <p>
-          Wir verwenden Cloudflare Web Analytics, um die Nutzung und die
-          technische Performance dieser Website statistisch auszuwerten.
-          Dadurch können wir beispielsweise erkennen, welche Inhalte häufig
-          aufgerufen werden und wie schnell beziehungsweise stabil die
-          Website auf unterschiedlichen Geräten und Browsern funktioniert.
-        </p>
-
-        <p>
-          Cloudflare Web Analytics verwendet ein JavaScript-Beacon. Das
-          Skript wird von{" "}
-          <code>static.cloudflareinsights.com/beacon.min.js</code> geladen.
-          Bei Websites, die über Cloudflare bereitgestellt werden, werden die
-          Messdaten grundsätzlich an einen Endpunkt unter{" "}
-          <code>/cdn-cgi/rum</code> auf der aufgerufenen Domain übertragen.
-        </p>
-
-        <p>
-          Im Rahmen der Auswertung können insbesondere folgende Informationen
-          verarbeitet werden:
-        </p>
-
-        <ul>
-          <li>aufgerufene Domain und aufgerufener Seitenpfad,</li>
-          <li>Seitenaufrufe und Zeitpunkte der Aufrufe,</li>
-          <li>Herkunftsseite beziehungsweise Referrer,</li>
-          <li>ungefähres Herkunftsland,</li>
-          <li>Gerätetyp, Browser und Betriebssystem,</li>
-          <li>Art des Navigationsvorgangs,</li>
-          <li>
-            technische Ladezeit- und Performanceinformationen,
-            einschließlich sogenannter Core Web Vitals.
-          </li>
-        </ul>
-
-        <p>
-          Bei der technischen Übertragung von Daten an einen Webserver fällt
-          außerdem zwangsläufig die IP-Adresse des zugreifenden Endgeräts an.
-          Nach Angaben von Cloudflare wird die IP-Adresse im Rahmen von
-          Cloudflare Web Analytics nicht dazu verwendet, einzelne Personen
-          zu identifizieren oder wiederzuerkennen.
-        </p>
-
-        <p>
-          Nach Angaben von Cloudflare verwendet Cloudflare Web Analytics
-          keine Cookies, keinen Local Storage und keine sonstigen
-          clientseitigen Kennungen zur Wiedererkennung von Besuchern. Es
-          erfolgt kein Fingerprinting anhand der IP-Adresse, des User-Agents
-          oder anderer Geräteeigenschaften und keine websiteübergreifende
-          Verfolgung einzelner Personen.
-        </p>
-
-        <p>
-          Cloudflare gibt an, nicht aggregierte Beacon-Daten für sieben Tage
-          aufzubewahren. Anschließend werden die Daten aggregiert und in
-          reduzierter Form weiter gespeichert. Die Auswertungen im
-          Cloudflare-Dashboard sind derzeit für einen Zeitraum von bis zu
-          sechs Monaten abrufbar.
-        </p>
-
-        <p>
-          Soweit bei der technischen Durchführung personenbezogene Daten
-          verarbeitet werden, erfolgt die Verarbeitung auf Grundlage von
-          Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse besteht in
-          der statistischen Auswertung, der Erkennung technischer Probleme
-          sowie der Verbesserung von Inhalt, Stabilität, Bedienbarkeit und
-          Performance unserer Website.
-        </p>
-
-        <p>
-          Weitere Informationen finden Sie in der{" "}
-          <a
-            href="https://developers.cloudflare.com/web-analytics/about/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Dokumentation zu Cloudflare Web Analytics
-          </a>{" "}
-          und den{" "}
-          <a
-            href="https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Informationen zur Datenerhebung
-          </a>
-          .
-        </p>
-
-        <h2>7. Cookies und lokale Speicherung</h2>
-
-        <h3>7.1 Cloudflare Web Analytics</h3>
-
-        <p>
-          Cloudflare Web Analytics setzt nach Angaben von Cloudflare keine
-          Cookies und verwendet weder den Local Storage noch den Session
-          Storage Ihres Browsers zur Wiedererkennung oder Analyse von
-          Besuchern.
-        </p>
-
-        <h3>7.2 Technisch erforderliche Cloudflare-Cookies</h3>
-
-        <p>
-          Abhängig von den aktivierten Sicherheitsfunktionen und der
-          Bewertung einer konkreten Anfrage kann Cloudflare technisch
-          erforderliche Cookies setzen. Dies kann insbesondere der Fall
-          sein, wenn eine Anfrage als ungewöhnlich erkannt, eine
-          Sicherheitsprüfung durchgeführt oder eine Challenge angezeigt
-          wird.
-        </p>
-
-        <p>
-          Hierzu können beispielsweise die Cookies <code>cf_clearance</code>{" "}
-          oder <code>__cf_bm</code> gehören. Diese Cookies dienen der
-          Unterscheidung legitimer Zugriffe von automatisierten oder
-          missbräuchlichen Zugriffen und nicht der Erstellung von
-          Marketingprofilen.
-        </p>
-
-        <p>
-          Soweit solche Cookies eingesetzt werden, erfolgt die Speicherung
-          auf Grundlage von § 25 Abs. 2 Nr. 2 TDDDG, da sie für die sichere
-          Bereitstellung des von Ihnen aufgerufenen digitalen Dienstes
-          erforderlich ist.
-        </p>
-
-        <p>
-          Weitere Informationen enthält die{" "}
-          <a
-            href="https://developers.cloudflare.com/fundamentals/reference/policies-compliances/cloudflare-cookies/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Übersicht der Cloudflare-Cookies
-          </a>
-          .
-        </p>
-
-        <h3>7.3 Speicherung der Darstellungseinstellung</h3>
+        <h2>7. Lokale Speicherung der Darstellungseinstellung</h2>
 
         <p>
           Diese Website ermöglicht die Auswahl zwischen einer hellen, einer
           dunklen und einer vom Betriebssystem abhängigen Darstellung. Wenn
           Sie eine Darstellung auswählen, wird diese Auswahl lokal in Ihrem
-          Browser gespeichert. Hierfür wird grundsätzlich der
-          Local-Storage-Schlüssel <code>theme</code> verwendet.
+          Browser gespeichert. Hierfür wird der Local-Storage-Schlüssel{" "}
+          <code>theme</code> verwendet.
         </p>
 
         <p>
@@ -387,9 +277,18 @@ export default function DatenschutzPage() {
         </p>
 
         <p>
-          Bei der E-Mail-Kommunikation können die von uns sowie die von Ihnen
-          eingesetzten E-Mail- und Infrastrukturprovider als Empfänger oder
-          Auftragsverarbeiter beteiligt sein.
+          Die veröffentlichte E-Mail-Adresse aboutdevops@gmail.com ist eine
+          Gmail-Adresse. Bei der Kommunikation über diese Adresse können
+          Google-Dienste als Empfänger oder Verarbeiter beteiligt sein.
+          Weitere Informationen finden Sie in der{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Datenschutzerklärung von Google
+          </a>
+          .
         </p>
 
         <h2>9. Externe Links</h2>
@@ -421,7 +320,9 @@ export default function DatenschutzPage() {
 
         <ul>
           <li>Cloudflare und verbundene Cloudflare-Unternehmen,</li>
-          <li>eingesetzte IT-, Hosting- und E-Mail-Dienstleister,</li>
+          <li>
+            Google LLC (bei Nutzung der veröffentlichten Gmail-Adresse),
+          </li>
           <li>
             Behörden, Gerichte oder andere öffentliche Stellen, soweit eine
             gesetzliche Verpflichtung besteht,
@@ -436,18 +337,20 @@ export default function DatenschutzPage() {
 
         <p>
           Cloudflare ist eine international tätige Unternehmensgruppe mit
-          Hauptsitz in den USA. Im Rahmen der Bereitstellung der
-          Cloudflare-Dienste kann eine Verarbeitung personenbezogener Daten
-          außerhalb des Europäischen Wirtschaftsraums, insbesondere in den
-          USA, stattfinden.
+          Hauptsitz in den USA. Google LLC ist ein Unternehmen mit Sitz in
+          den USA. Im Rahmen der Bereitstellung der Cloudflare-Dienste und
+          bei der E-Mail-Kommunikation über Gmail kann eine Verarbeitung
+          personenbezogener Daten außerhalb des Europäischen Wirtschaftsraums
+          stattfinden.
         </p>
 
         <p>
-          Cloudflare gibt an, für Übermittlungen in die USA unter anderem auf
-          seine Zertifizierung nach dem EU-U.S. Data Privacy Framework zu
-          vertrauen. Soweit ein Angemessenheitsbeschluss nicht anwendbar ist,
-          sieht das Data Processing Addendum von Cloudflare die Verwendung
-          der Standardvertragsklauseln der Europäischen Kommission und
+          Cloudflare verfügt über eine Zertifizierung nach dem EU-U.S. Data
+          Privacy Framework. Google LLC verfügt ebenfalls über eine
+          Zertifizierung nach dem EU-U.S. Data Privacy Framework. Soweit
+          diese Angemessenheitsbeschlüsse nicht anwendbar sind, sehen die
+          jeweiligen Data Processing Addenda die Verwendung der
+          Standardvertragsklauseln der Europäischen Kommission und
           ergänzender Schutzmaßnahmen vor.
         </p>
 
@@ -487,7 +390,7 @@ export default function DatenschutzPage() {
           Erfolgt eine Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f
           DSGVO, haben Sie gemäß Art. 21 DSGVO das Recht, aus Gründen, die
           sich aus Ihrer besonderen Situation ergeben, jederzeit gegen die
-          Verarbeitung Ihrer personenbezogenen Daten Widerspruch einzulegen.
+          Verarbeitung Ihrer personenbezogener Daten Widerspruch einzulegen.
         </p>
 
         <p>

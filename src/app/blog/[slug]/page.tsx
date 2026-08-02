@@ -96,7 +96,7 @@ export default async function ArticlePage({
       />
       <Container className="py-12 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_14rem]">
-          <article id="article-body">
+          <article id="article-body" lang={article.language}>
             <ArticleHeader article={article} />
 
             {toc.length > 0 && (

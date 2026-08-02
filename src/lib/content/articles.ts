@@ -2,7 +2,7 @@ import { getAuthor } from "@/config/authors";
 import { getTopicBySlug, topics as topicDefinitions } from "@/config/topics";
 import generatedArticles from "@/lib/content/generated/articles.json";
 import { slugify } from "@/lib/utils/slug";
-import type { Article, ArticleSummary, SeriesInfo } from "@/types/content";
+import type { Article, ArticleSummary, SeriesInfo, AITransparency } from "@/types/content";
 
 // Raw shape written by scripts/generate-content-manifest.mjs. Frontmatter is
 // already validated at generation time (build/dev start), not here.
@@ -18,6 +18,8 @@ type GeneratedArticle = {
   featured: boolean;
   draft: boolean;
   series?: SeriesInfo;
+  language?: "de" | "en";
+  ai?: AITransparency;
   readingTime: string;
   content: string;
 };
@@ -50,6 +52,8 @@ function readArticles(): Article[] {
       featured: fm.featured,
       draft: fm.draft,
       series: fm.series,
+      language: fm.language,
+      ai: fm.ai,
       readingTime: fm.readingTime,
       content: fm.content,
     };

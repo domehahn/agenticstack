@@ -29,7 +29,7 @@ test("Datenschutz is reachable and covers the responsible party and Cloudflare",
   await expect(page.getByText("Dominik Hahn").first()).toBeVisible();
   await expect(page.getByText("Cloudflare").first()).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: /Lokale Speicherung der Theme/ }),
+    page.getByRole("heading", { name: /Lokale Speicherung der Darstellungseinstellung/ }),
   ).toBeVisible();
 });
 

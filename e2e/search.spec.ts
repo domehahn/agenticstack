@@ -9,15 +9,15 @@ test("slash key opens search and navigates to a result", async ({ page }) => {
 
   const input = page.getByPlaceholder("Search articles, topics, tags…");
   await expect(input).toBeFocused();
-  await input.fill("agentic engineering");
+  await input.fill("instruction override");
 
   const result = page
     .getByRole("listbox", { name: "Suggestions" })
-    .getByText("What Is Agentic Engineering?");
+    .getByText(/Instruction Override/);
   await expect(result).toBeVisible();
   await result.click();
 
-  await expect(page).toHaveURL("/blog/what-is-agentic-engineering");
+  await expect(page).toHaveURL(/\/blog\/.*instruction-override/);
   await expect(dialog).toBeHidden();
 });
 

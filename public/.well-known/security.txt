@@ -1,0 +1,4 @@
+Contact: mailto:aboutdevops@gmail.com
+Expires: 2027-08-01T23:59:59Z
+Canonical: https://agenticstack.eu/.well-known/security.txt
+Preferred-Languages: de, en

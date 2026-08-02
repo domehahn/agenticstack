@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
 export default function ImpressumPage() {
   return (
     <Container className="py-12 sm:py-16">
-      <div className="prose prose-article max-w-2xl">
+      <div className="prose prose-article max-w-2xl" lang="de">
         <h1>Impressum</h1>
 
         <h2>Angaben zum Anbieter</h2>

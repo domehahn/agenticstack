@@ -15,7 +15,11 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "preview": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "cloudflare:audit": "tsx scripts/cloudflare-audit.mts",
+    "cloudflare:plan": "tsx scripts/cloudflare-audit.mts",
+    "cloudflare:apply": "tsx scripts/cloudflare-audit.mts --apply",
+    "production:audit": "tsx scripts/cloudflare-audit.mts production"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -52,6 +56,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5",
     "vitest": "^4.1.10",
     "wrangler": "^4.115.0"

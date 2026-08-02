@@ -27,27 +27,53 @@ const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
 const OUTPUT_DIR = path.join(process.cwd(), "src", "lib", "content", "generated");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "articles.json");
 
-const frontmatterSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  updated: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  author: z.string().min(1),
-  topics: z.array(z.string()).min(1),
-  tags: z.array(z.string()).default([]),
-  featured: z.boolean().optional().default(false),
-  draft: z.boolean().optional().default(false),
-  series: z
-    .object({
-      slug: z.string(),
-      title: z.string(),
-      order: z.number(),
-    })
-    .optional(),
-});
+const frontmatterSchema = z
+  .object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    updated: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    author: z.string().min(1),
+    topics: z.array(z.string()).min(1),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().optional().default(false),
+    draft: z.boolean().optional().default(false),
+    series: z
+      .object({
+        slug: z.string(),
+        title: z.string(),
+        order: z.number(),
+      })
+      .optional(),
+    language: z.enum(["de", "en"]).optional(),
+    ai: z
+      .object({
+        assisted: z.boolean(),
+        humanReviewed: z.boolean().optional(),
+        reviewedBy: z.string().optional(),
+        reviewedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        disclosure: z.string().optional(),
+        tools: z.array(z.string()).optional(),
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      const articleDate = new Date(data.date);
+      const aiActDate = new Date("2026-08-02");
+      if (articleDate >= aiActDate && !data.ai) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Artikel ab 2026-08-02 benötigen ein ai-Feld (assisted: true/false)",
+    }
+  );
 
 function generate() {
   const files = fs
@@ -79,6 +105,8 @@ function generate() {
       featured: fm.featured,
       draft: fm.draft,
       series: fm.series,
+      language: fm.language,
+      ai: fm.ai,
       readingTime: readingTime(content).text,
       content,
     };

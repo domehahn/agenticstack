@@ -7,6 +7,15 @@ export type SeriesInfo = {
   order: number;
 };
 
+export type AITransparency = {
+  assisted: boolean;
+  humanReviewed?: boolean;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  disclosure?: string;
+  tools?: string[];
+};
+
 export type ArticleFrontmatter = {
   title: string;
   description: string;
@@ -22,6 +31,8 @@ export type ArticleFrontmatter = {
     title: string;
     order: number;
   };
+  language?: "de" | "en";
+  ai?: AITransparency;
 };
 
 export type Article = {
@@ -38,6 +49,8 @@ export type Article = {
   series?: SeriesInfo;
   readingTime: string;
   content: string;
+  language?: "de" | "en";
+  ai?: AITransparency;
 };
 
 export type ArticleSummary = Omit<Article, "content">;

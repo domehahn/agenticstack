@@ -1,3 +1,4 @@
+import { AIDisclosure } from "@/components/blog/ai-disclosure";
 import { TagList } from "@/components/blog/tag-list";
 import { TopicBadge } from "@/components/blog/topic-badge";
 import { formatDate } from "@/lib/utils/dates";
@@ -40,6 +41,7 @@ export function ArticleHeader({ article }: { article: Article }) {
           <TagList tags={article.tags} />
         </div>
       )}
+      {article.ai && <AIDisclosure ai={article.ai} />}
     </header>
   );
 }
