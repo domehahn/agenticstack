@@ -159,8 +159,25 @@ export function getAdjacentArticles(slug: string): {
   next?: ArticleSummary;
 } {
   const articles = getAllArticles();
+  const current = articles.find((a) => a.slug === slug);
+  if (!current) return {};
+
+  // Within a series, "previous"/"next" must stay inside that series —
+  // otherwise part 1 of one series links "next" into an unrelated series
+  // just because it happens to be the next-published article overall.
+  if (current.series) {
+    const seriesArticles = getSeriesArticles(current.series.slug);
+    const index = seriesArticles.findIndex((a) => a.slug === slug);
+    return {
+      previous: index > 0 ? seriesArticles[index - 1] : undefined,
+      next:
+        index >= 0 && index < seriesArticles.length - 1
+          ? seriesArticles[index + 1]
+          : undefined,
+    };
+  }
+
   const index = articles.findIndex((a) => a.slug === slug);
-  if (index === -1) return {};
   return {
     previous: articles[index + 1],
     next: index > 0 ? articles[index - 1] : undefined,
