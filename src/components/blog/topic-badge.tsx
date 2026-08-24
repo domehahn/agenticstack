@@ -14,7 +14,7 @@ export function TopicBadge({
     <Link
       href={`/topics/${topic.slug}`}
       className={cn(
-        "inline-flex items-center text-xs font-semibold uppercase tracking-wider text-accent hover:underline",
+        "inline-flex items-center rounded-full bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent transition-colors hover:bg-accent/15",
         className,
       )}
     >

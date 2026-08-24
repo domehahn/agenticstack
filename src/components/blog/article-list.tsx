@@ -17,7 +17,7 @@ export function ArticleList({
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {articles.map((article) => (
         <ArticleListItem key={article.slug} article={article} />
       ))}

@@ -47,33 +47,35 @@ export default async function SeriesPage({
   return (
     <Container className="py-12 sm:py-16">
       <header className="max-w-2xl border-b border-border pb-8">
-        <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-          Series
-        </p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+          Serie
+        </span>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
           {title}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          {articles.length} parts, read in order.
+          {articles.length} Teile, in Reihenfolge zu lesen.
         </p>
       </header>
-      <ol className="mt-8 flex flex-col gap-6">
+      <ol className="mt-8 flex flex-col gap-4">
         {articles.map((article, index) => (
-          <li key={article.slug} className="flex gap-4 border-b border-border pb-6">
-            <span className="font-mono text-sm text-muted-foreground">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <div>
-              <Link
-                href={`/blog/${article.slug}`}
-                className="font-medium hover:text-accent"
-              >
-                {article.title}
-              </Link>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {article.description}
-              </p>
-            </div>
+          <li key={article.slug}>
+            <Link
+              href={`/blog/${article.slug}`}
+              className="group flex gap-4 rounded-2xl border border-border p-6 transition-colors hover:border-accent/40 hover:bg-surface"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface font-mono text-xs text-muted-foreground">
+                {index + 1}
+              </span>
+              <div>
+                <p className="font-medium group-hover:text-accent">
+                  {article.title}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {article.description}
+                </p>
+              </div>
+            </Link>
           </li>
         ))}
       </ol>
