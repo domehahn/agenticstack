@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArticleHeader } from "@/components/blog/article-header";
@@ -97,6 +99,13 @@ export default async function ArticlePage({
       <Container className="py-12 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_14rem]">
           <article id="article-body" lang={article.language}>
+            <Link
+              href="/blog"
+              className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+              Zurück zum Blog
+            </Link>
             <ArticleHeader article={article} />
 
             {toc.length > 0 && (
