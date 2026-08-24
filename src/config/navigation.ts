@@ -21,9 +21,6 @@ export const footerNavigation: { title: string; items: NavItem[] }[] = [
   },
   {
     title: "Publication",
-    items: [
-      { label: "About", href: "/about" },
-      { label: "RSS feed", href: "/feed.xml" },
-    ],
+    items: [{ label: "About", href: "/about" }],
   },
 ];

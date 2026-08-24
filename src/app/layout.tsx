@@ -36,11 +36,6 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [...siteConfig.keywords],
-  alternates: {
-    types: {
-      "application/rss+xml": siteConfig.links.rss,
-    },
-  },
 };
 
 export default function RootLayout({

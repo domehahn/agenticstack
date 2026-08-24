@@ -88,39 +88,7 @@ export default function DatenschutzPage() {
           Internetangebots.
         </p>
 
-        <h2>4. RSS-Feed</h2>
-
-        <p>
-          Diese Website bietet einen RSS-Feed unter der Adresse{" "}
-          <a href="/feed.xml">/feed.xml</a> an. Der RSS-Feed ermöglicht
-          es Ihnen, neue Beiträge automatisch über einen Feed-Reader zu
-          abonnieren und zu lesen, ohne die Website direkt aufrufen zu
-          müssen.
-        </p>
-
-        <p>
-          Der RSS-Feed selbst ist eine öffentlich zugängliche XML-Datei,
-          die Titel, Beschreibungen und Links zu Beiträgen enthält. Er
-          wird beim Aufruf der Website statisch erzeugt und enthält keine
-          personenbezogenen Daten.
-        </p>
-
-        <p>
-          Beim Abruf des RSS-Feeds durch Ihren Feed-Reader werden jedoch
-          die in Abschnitt 3 genannten technischen Zugriffsdaten
-          verarbeitet. Welche weiteren Daten Ihr Feed-Reader oder
-          Feed-Dienst verarbeitet, richtet sich nach dessen
-          Datenschutzbestimmungen. Wir haben hierauf keinen Einfluss.
-        </p>
-
-        <p>
-          Die Verarbeitung der technischen Zugriffsdaten beim Abruf des
-          RSS-Feeds erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.
-          Unser berechtigtes Interesse besteht in der Bereitstellung des
-          Feeds für Abonnenten.
-        </p>
-
-        <h2>5. Hosting, Content Delivery und Sicherheit durch Cloudflare</h2>
+        <h2>4. Hosting, Content Delivery und Sicherheit durch Cloudflare</h2>
 
         <p>
           Diese Website wird über Dienste von Cloudflare bereitgestellt und
@@ -202,7 +170,7 @@ export default function DatenschutzPage() {
           .
         </p>
 
-        <h2>6. Server- und Sicherheitsprotokolle</h2>
+        <h2>5. Server- und Sicherheitsprotokolle</h2>
 
         <p>
           Cloudflare kann technische Protokoll- und Sicherheitsdaten
@@ -220,7 +188,7 @@ export default function DatenschutzPage() {
           gelöscht oder anonymisiert.
         </p>
 
-        <h2>7. Lokale Speicherung der Darstellungseinstellung</h2>
+        <h2>6. Lokale Speicherung der Darstellungseinstellung</h2>
 
         <p>
           Diese Website ermöglicht die Auswahl zwischen einer hellen, einer
@@ -242,7 +210,7 @@ export default function DatenschutzPage() {
           weiteren Seitenaufrufen beizubehalten.
         </p>
 
-        <h2>8. Kontaktaufnahme per E-Mail</h2>
+        <h2>7. Kontaktaufnahme per E-Mail</h2>
 
         <p>
           Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir Ihre
@@ -294,7 +262,7 @@ export default function DatenschutzPage() {
           berechtigten Gründe für eine weitere Speicherung bestehen.
         </p>
 
-        <h2>9. Externe Links</h2>
+        <h2>8. Externe Links</h2>
 
         <p>
           Diese Website enthält Links zu externen Angeboten, insbesondere zu
@@ -310,7 +278,7 @@ export default function DatenschutzPage() {
           dessen Datenschutzbestimmungen.
         </p>
 
-        <h2>10. Empfänger personenbezogener Daten</h2>
+        <h2>9. Empfänger personenbezogener Daten</h2>
 
         <p>
           Personenbezogene Daten werden nur an Empfänger übermittelt, wenn
@@ -336,7 +304,7 @@ export default function DatenschutzPage() {
           </li>
         </ul>
 
-        <h2>11. Datenübermittlungen in Drittländer</h2>
+        <h2>10. Datenübermittlungen in Drittländer</h2>
 
         <p>
           Cloudflare ist eine international tätige Unternehmensgruppe mit
@@ -364,7 +332,7 @@ export default function DatenschutzPage() {
           auf Daten erhalten.
         </p>
 
-        <h2>12. Ihre Rechte als betroffene Person</h2>
+        <h2>11. Ihre Rechte als betroffene Person</h2>
 
         <p>
           Soweit die gesetzlichen Voraussetzungen erfüllt sind, stehen Ihnen
@@ -387,7 +355,7 @@ export default function DatenschutzPage() {
           Abschnitt 1 genannte E-Mail-Adresse.
         </p>
 
-        <h2>13. Widerspruch gegen die Verarbeitung</h2>
+        <h2>12. Widerspruch gegen die Verarbeitung</h2>
 
         <p>
           Erfolgt eine Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f
@@ -404,7 +372,7 @@ export default function DatenschutzPage() {
           Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.
         </p>
 
-        <h2>14. Beschwerderecht bei einer Aufsichtsbehörde</h2>
+        <h2>13. Beschwerderecht bei einer Aufsichtsbehörde</h2>
 
         <p>
           Sie haben gemäß Art. 77 DSGVO das Recht, sich bei einer
@@ -440,14 +408,14 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2>15. Automatisierte Entscheidungsfindung</h2>
+        <h2>14. Automatisierte Entscheidungsfindung</h2>
 
         <p>
           Es findet keine automatisierte Entscheidungsfindung einschließlich
           Profiling im Sinne von Art. 22 DSGVO statt.
         </p>
 
-        <h2>16. Änderungen dieser Datenschutzerklärung</h2>
+        <h2>15. Änderungen dieser Datenschutzerklärung</h2>
 
         <p>
           Wir können diese Datenschutzerklärung anpassen, wenn sich die

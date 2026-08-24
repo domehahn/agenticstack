@@ -25,7 +25,6 @@ export const siteConfig = {
   links: {
     github: "https://github.com/domehahn/agenticstack",
     linkedin: undefined as string | undefined,
-    rss: "/feed.xml",
   },
 } as const;
 

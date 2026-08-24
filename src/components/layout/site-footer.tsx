@@ -1,4 +1,3 @@
-import { Rss } from "lucide-react";
 import Link from "next/link";
 
 import { GithubIcon } from "@/components/shared/icons";
@@ -31,13 +30,6 @@ export function SiteFooter() {
                 <GithubIcon className="h-4 w-4" aria-hidden="true" />
               </a>
             )}
-            <a
-              href={siteConfig.links.rss}
-              aria-label="RSS feed"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Rss className="h-4 w-4" aria-hidden="true" />
-            </a>
           </div>
         </div>
 
