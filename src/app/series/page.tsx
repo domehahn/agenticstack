@@ -28,17 +28,28 @@ export default function SeriesIndexPage() {
           No series published yet.
         </p>
       ) : (
-        <ul className="mt-8 flex flex-col gap-8">
+        <ul className="mt-8 flex flex-col gap-4">
           {series.map((s) => (
-            <li key={s.slug} className="border-b border-border pb-8">
-              <Link href={`/series/${s.slug}`} className="group">
-                <h2 className="text-lg font-semibold group-hover:text-accent">
-                  {s.title}
-                </h2>
+            <li key={s.slug}>
+              <Link
+                href={`/series/${s.slug}`}
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-border p-6 transition-colors hover:border-accent/40 hover:bg-surface"
+              >
+                <div>
+                  <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+                    Serie
+                  </span>
+                  <h2 className="mt-3 text-lg font-semibold group-hover:text-accent">
+                    {s.title}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {s.count} {s.count === 1 ? "Teil" : "Teile"}
+                  </p>
+                </div>
+                <span className="shrink-0 text-sm font-semibold text-accent transition-transform group-hover:translate-x-0.5">
+                  →
+                </span>
               </Link>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {s.count} parts
-              </p>
             </li>
           ))}
         </ul>

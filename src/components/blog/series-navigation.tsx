@@ -12,13 +12,24 @@ export function SeriesNavigation({
   articles: ArticleSummary[];
   currentSlug: string;
 }) {
+  const currentIndex = articles.findIndex(
+    (article) => article.slug === currentSlug,
+  );
+
   return (
-    <aside className="not-prose my-8 rounded-md border border-border p-5">
-      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-        Series
-      </p>
-      <p className="mt-1 text-base font-semibold">{seriesTitle}</p>
-      <ol className="mt-4 flex flex-col gap-2">
+    <aside className="not-prose my-10 overflow-hidden rounded-2xl border border-border bg-surface-elevated">
+      <div className="border-b border-border px-6 py-5">
+        <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
+          Serie
+        </span>
+        <p className="mt-2 text-base font-semibold">{seriesTitle}</p>
+        {currentIndex >= 0 && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Teil {currentIndex + 1} von {articles.length}
+          </p>
+        )}
+      </div>
+      <ol className="flex flex-col gap-1 p-3">
         {articles.map((article, index) => {
           const isCurrent = article.slug === currentSlug;
           return (
@@ -27,16 +38,23 @@ export function SeriesNavigation({
                 href={`/blog/${article.slug}`}
                 aria-current={isCurrent ? "page" : undefined}
                 className={cn(
-                  "flex gap-3 rounded-md px-2 py-1.5 text-sm",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors",
                   isCurrent
-                    ? "bg-surface font-semibold text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "bg-accent/10 font-semibold text-foreground"
+                    : "text-muted-foreground hover:bg-surface hover:text-foreground",
                 )}
               >
-                <span className="font-mono text-xs text-muted-foreground">
-                  {String(index + 1).padStart(2, "0")}
+                <span
+                  className={cn(
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[11px]",
+                    isCurrent
+                      ? "bg-accent text-accent-foreground"
+                      : "bg-surface text-muted-foreground",
+                  )}
+                >
+                  {index + 1}
                 </span>
-                {article.title}
+                <span className="leading-snug">{article.title}</span>
               </Link>
             </li>
           );

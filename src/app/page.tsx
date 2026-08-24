@@ -111,16 +111,24 @@ export default function HomePage() {
               View all
             </Link>
           </div>
-          <ul className="mt-5 flex flex-col gap-4">
+          <ul className="mt-5 flex flex-col gap-3">
             {series.slice(0, 3).map((s) => (
               <li key={s.slug}>
-                <Link href={`/series/${s.slug}`} className="group block">
-                  <p className="font-medium group-hover:text-accent">
-                    {s.title}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {s.count} {s.count === 1 ? "part" : "parts"}
-                  </p>
+                <Link
+                  href={`/series/${s.slug}`}
+                  className="group flex items-center justify-between gap-4 rounded-2xl border border-border p-5 transition-colors hover:border-accent/40 hover:bg-surface"
+                >
+                  <div>
+                    <p className="font-medium group-hover:text-accent">
+                      {s.title}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {s.count} {s.count === 1 ? "part" : "parts"}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-accent transition-transform group-hover:translate-x-0.5">
+                    →
+                  </span>
                 </Link>
               </li>
             ))}
