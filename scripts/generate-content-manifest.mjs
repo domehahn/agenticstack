@@ -75,26 +75,58 @@ const frontmatterSchema = z
     }
   );
 
-function generate() {
-  const files = fs
-    .readdirSync(CONTENT_DIR)
-    .filter((file) => file.endsWith(".mdx"));
+// Articles can live directly in content/blog/ or be grouped into
+// subfolders (e.g. content/blog/agentic-security/sec-01-...mdx) purely to
+// keep the source tree tidy — folder placement carries no meaning for the
+// site (series grouping comes from frontmatter `series`, not from disk
+// layout). Walk the tree recursively and collect each .mdx file's path
+// relative to CONTENT_DIR, e.g. "sec-01-foo" or "agentic-security/sec-01-foo".
+function findMdxFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...findMdxFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith(".mdx")) {
+      const relativePath = path
+        .relative(CONTENT_DIR, fullPath)
+        .replace(/\.mdx$/, "");
+      files.push(relativePath.split(path.sep).join("/"));
+    }
+  }
+  return files;
+}
 
+function generate() {
+  const files = findMdxFiles(CONTENT_DIR);
+
+  const seenSlugs = new Map();
   const articles = files.map((file) => {
-    const slug = file.replace(/\.mdx$/, "");
-    const raw = fs.readFileSync(path.join(CONTENT_DIR, file), "utf8");
+    const slug = path.basename(file, ".mdx");
+
+    const existing = seenSlugs.get(slug);
+    if (existing) {
+      throw new Error(
+        `Duplicate article slug "${slug}": content/blog/${existing} and content/blog/${file}.mdx both resolve to it. Slugs must be unique across all of content/blog, including subfolders.`,
+      );
+    }
+    seenSlugs.set(slug, `${file}.mdx`);
+
+    const raw = fs.readFileSync(path.join(CONTENT_DIR, `${file}.mdx`), "utf8");
     const { data, content } = matter(raw);
 
     const parsed = frontmatterSchema.safeParse(data);
     if (!parsed.success) {
       throw new Error(
-        `Invalid frontmatter in content/blog/${file}: ${parsed.error.message}`,
+        `Invalid frontmatter in content/blog/${file}.mdx: ${parsed.error.message}`,
       );
     }
     const fm = parsed.data;
 
     return {
       slug,
+      file,
       title: fm.title,
       description: fm.description,
       date: fm.date,

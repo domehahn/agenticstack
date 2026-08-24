@@ -69,11 +69,13 @@ export default async function ArticlePage({
     : [];
 
   // Dynamic import with a template-literal path so the bundler can
-  // statically discover every content/blog/*.mdx file and compile it at
+  // statically discover every content/blog/**/*.mdx file and compile it at
   // build time (no runtime MDX compilation — that path relies on eval(),
   // which Cloudflare Workers disallows; see content/blog's authoring docs).
+  // Uses sourceFile (not slug) so articles grouped into subfolders resolve
+  // to the right file.
   const { default: MDXContent } = await import(
-    `../../../../content/blog/${article.slug}.mdx`
+    `../../../../content/blog/${article.sourceFile}.mdx`
   );
 
   return (

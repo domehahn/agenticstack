@@ -8,6 +8,7 @@ import type { Article, ArticleSummary, SeriesInfo, AITransparency } from "@/type
 // already validated at generation time (build/dev start), not here.
 type GeneratedArticle = {
   slug: string;
+  file: string;
   title: string;
   description: string;
   date: string;
@@ -42,6 +43,7 @@ function readArticles(): Article[] {
 
     const article: Article = {
       slug: fm.slug,
+      sourceFile: fm.file,
       title: fm.title,
       description: fm.description,
       date: fm.date,
