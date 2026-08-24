@@ -8,15 +8,15 @@ import { cn } from "@/lib/utils/cn";
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center", className)}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- static local SVG brand mark, not a raster optimization candidate */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- static local raster brand mark, not a Next/Image optimization candidate */}
       <img
-        src="/logo/full-light.svg"
+        src="/logo/full-light.png"
         alt="AgenticStack"
         className="block h-full w-auto dark:hidden"
       />
-      {/* eslint-disable-next-line @next/next/no-img-element -- static local SVG brand mark, not a raster optimization candidate */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- static local raster brand mark, not a Next/Image optimization candidate */}
       <img
-        src="/logo/full-dark.svg"
+        src="/logo/full-dark.png"
         alt="AgenticStack"
         className="hidden h-full w-auto dark:block"
       />
