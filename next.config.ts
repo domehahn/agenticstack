@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     // future usage: images render at their original dimensions, unresized.
     unoptimized: true,
   },
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 const withMDX = createMDX({
