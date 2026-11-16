@@ -15,9 +15,9 @@ export function SiteHeader({
 }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-sm">
-      <Container className="flex h-24 items-center justify-between">
+      <Container className="flex h-20 items-center justify-between">
         <Link href="/" aria-label="AgenticStack home">
-          <Logo className="h-20" />
+          <Logo className="h-12 sm:h-14" />
         </Link>
 
         <nav aria-label="Primary" className="hidden sm:block">

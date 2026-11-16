@@ -10,8 +10,8 @@ export const authors: Record<string, Author> = {
   dome: {
     id: "dome",
     name: "Dominik Hahn",
-    role: "Editor, AgenticStack",
-    bio: "Writes about the shift from DevSecOps to agentic, AI-native engineering.",
+    role: "Senior DevSecOps Engineer & Software Architect (M.Sc., CPSA-F)",
+    bio: "Over a decade of experience across backend software engineering, enterprise consulting, cloud-native microservices, Kubernetes platforms, and DevSecOps in regulated environments.",
   },
 };
 

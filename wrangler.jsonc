@@ -14,5 +14,16 @@
   // Paid plan just to serve a blog.
   "assets": {
     "directory": "out"
-  }
+  },
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "agenticstack.eu/*",
+      "zone_name": "agenticstack.eu"
+    },
+    {
+      "pattern": "www.agenticstack.eu/*",
+      "zone_name": "agenticstack.eu"
+    }
+  ]
 }
