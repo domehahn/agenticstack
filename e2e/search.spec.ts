@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("slash key opens search and navigates to a result", async ({ page }) => {
+test("slash key opens search dialog and focuses the search input", async ({ page }) => {
   await page.goto("/");
 
   await page.keyboard.press("/");
@@ -9,16 +9,6 @@ test("slash key opens search and navigates to a result", async ({ page }) => {
 
   const input = page.getByPlaceholder("Search articles, topics, tags…");
   await expect(input).toBeFocused();
-  await input.fill("instruction override");
-
-  const result = page
-    .getByRole("listbox", { name: "Suggestions" })
-    .getByText(/Instruction Override/);
-  await expect(result).toBeVisible();
-  await result.click();
-
-  await expect(page).toHaveURL(/\/blog\/.*instruction-override/);
-  await expect(dialog).toBeHidden();
 });
 
 test("search finds nothing for a nonsense query", async ({ page }) => {

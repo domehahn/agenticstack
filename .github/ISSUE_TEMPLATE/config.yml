@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Vulnerability Report
+    url: https://github.com/domehahn/agenticstack/security/policy
+    about: Please do not report security vulnerabilities in public issues. See SECURITY.md.
+  - name: Live Publication
+    url: https://agenticstack.eu
+    about: Visit AgenticStack at agenticstack.eu

@@ -194,6 +194,7 @@ async function auditWebAnalytics(
   zoneId: string,
   _dryRun: boolean
 ): Promise<AuditResult> {
+  void _dryRun;
   const findings: Finding[] = [];
 
   try {

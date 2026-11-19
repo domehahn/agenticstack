@@ -1,290 +1,142 @@
-# AgenticStack
+<div align="center">
 
-A production-grade technical publication about agentic engineering,
-DevSecOps, and the systems underneath both. Built with Next.js (App Router),
-TypeScript, Tailwind CSS, and MDX.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/logo/full-dark.png" />
+  <source media="(prefers-color-scheme: light)" srcset="public/logo/full-light.png" />
+  <img alt="AgenticStack" src="public/logo/full-light.png" width="380" />
+</picture>
 
-The blog ships with **no demo articles** — see [Adding articles](#adding-articles)
-to publish your first one.
+### Engineering the transition from DevSecOps to Agentic Engineering.
 
-## Stack
+[![CI](https://github.com/domehahn/agenticstack/actions/workflows/ci.yml/badge.svg)](https://github.com/domehahn/agenticstack/actions/workflows/ci.yml)
+[![Website](https://img.shields.io/badge/website-agenticstack.eu-00bec6)](https://agenticstack.eu)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Static%20Assets-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/static-assets/)
+[![EU AI Act Art. 50](https://img.shields.io/badge/EU%20AI%20Act-Art.%2050%20Compliant-144086)](docs/compliance/editorial-ai-policy.md)
+[![License: MIT](https://img.shields.io/badge/Code%20License-MIT-blue.svg)](LICENSE)
 
-- **Next.js 16 (App Router, React Server Components)** — static generation
-  for all content pages, minimal client JavaScript.
-- **TypeScript, strict mode.**
-- **Tailwind CSS v4** — CSS-variable design tokens in `src/app/globals.css`,
-  `@tailwindcss/typography` for article prose.
-- **MDX** compiled at build time via `@next/mdx` (not runtime compilation —
-  see [Content pipeline](#content-pipeline) for why), with `rehype-pretty-code`
-  (Shiki) for code highlighting, `rehype-slug` + `rehype-autolink-headings`
-  for heading anchors, `remark-gfm` for tables/strikethrough, and
-  `remark-frontmatter` to strip the YAML block before rendering.
-- **next-themes** for light/dark/system theming without a flash of
-  unstyled content.
-- **cmdk** for the command-palette search dialog.
-- No database, no CMS — content lives in the repo as MDX files.
+[**Live Publication**](https://agenticstack.eu) · [**Editorial AI Policy**](docs/compliance/editorial-ai-policy.md) · [**Compliance Docs**](docs/compliance/README.md) · [**Security Policy**](SECURITY.md) · [**Contributing**](CONTRIBUTING.md)
 
-## Architecture
+</div>
 
-```text
-src/
-├── app/                # Routes (App Router). Pages stay thin: fetch via
-│                        lib/content, render via components/.
-├── components/
-│   ├── layout/          # Header, footer, theme provider (shell chrome)
-│   ├── navigation/      # Mobile nav, theme toggle
-│   ├── search/          # Command palette (client)
-│   ├── blog/            # Article-domain UI: lists, TOC, meta, series nav
-│   ├── mdx/             # Components usable inside article bodies
-│   ├── ui/              # Generic primitives (Button, …)
-│   └── shared/          # Container, icons — no domain knowledge
-├── content/blog/        # Git submodule → github.com/domehahn/agentic-devsecops.
-│                          Your articles live here. See its README.
-├── lib/
-│   ├── content/          # articles.ts: reads + validates + indexes MDX
-│   ├── search/           # Split server/client: build (fs) vs query (pure)
-│   └── seo/              # Metadata + JSON-LD builders, used by every page
-├── config/               # site.ts, navigation.ts, topics.ts, authors.ts —
-│                          the only places branding/nav/topics are defined
-└── types/                # Article domain model
+---
+
+## Overview
+
+**AgenticStack** ([agenticstack.eu](https://agenticstack.eu)) is a production-grade technical publication exploring how AI agents, DevSecOps, software architecture, security, platforms, and engineering methodology converge into a single discipline.
+
+The application is engineered as a **pure static export** (`output: "export"`) built with Next.js 16 (App Router), strict TypeScript, Tailwind CSS v4, and build-time MDX compilation, deployed directly to Cloudflare's edge static-assets layer with zero server-side runtime dependencies.
+
+---
+
+## Architecture & Content Pipeline
+
+```mermaid
+flowchart LR
+  Submodule["content/blog/*.mdx\n(Git Submodule)"] --> ManifestGen["scripts/generate-content-manifest.mjs\n(Zod + EU AI Act Art. 50 Validation)"]
+  ManifestGen --> ManifestJSON["src/lib/content/generated/articles.json"]
+  Submodule --> NextMDX["@next/mdx Build-Time Compilation\n(Shiki + GFM + Remark/Rehype)"]
+  ManifestJSON --> NextBuild["next build (output: 'export')"]
+  NextMDX --> NextBuild
+  PublicHeaders["public/_headers & security.txt"] --> NextBuild
+  NextBuild --> OutDir["out/ (Pure Static HTML/CSS/JS/OG)"]
+  OutDir --> Cloudflare["Cloudflare Workers Static Assets\n(agenticstack.eu)"]
 ```
 
-### Key decisions
+### Repository Layout
 
-- **Content lives in the filesystem, not a database — but never via `fs` at
-  request time.** See [Content pipeline](#content-pipeline): a build-time
-  script reads `content/blog/*.mdx` and everything downstream (metadata
-  queries, MDX rendering) works off what that step produced, not off the
-  filesystem directly.
-- **Topics are curated, tags are freeform.** Topics live in
-  `config/topics.ts` and represent the publication's primary domains; tags
-  are whatever an article's frontmatter declares. This mirrors how the
-  site's navigation treats them differently (Topics is primary nav; Tags is
-  reachable but secondary).
-- **Search is split into a server half and a client half.** `lib/search/index.ts`
-  (server-only) builds the index once per request in the root layout.
-  `lib/search/query.ts` is a pure, dependency-free scoring function that
-  ships to the client bundle — keeping content-loading code out of client
-  JavaScript entirely.
-- **Server Components by default.** Only components with real interactivity
-  (theme toggle, search dialog, mobile nav, reading progress, TOC
-  scroll-spy, copy button) are marked `"use client"`. Article pages,
-  listings, and MDX rendering are all server-rendered.
-- **MDX components are the extension point**, not one-off markup in every
-  article. `<Note>`, `<Warning>`, `<Architecture>`, `<KeyTakeaway>`, and
-  `<Figure>` are defined once in `components/mdx/` and available in every
-  article body.
+```text
+├── content/blog/        # Git submodule → github.com/domehahn/agentic-devsecops
+├── docs/compliance/     # EU AI Act Art. 50 policy, RFC 9116 & Cloudflare audit docs
+├── e2e/                 # Playwright end-to-end test suite
+├── public/
+│   ├── .well-known/     # RFC 9116 security.txt
+│   ├── _headers         # Cloudflare static-assets security & TDM headers
+│   └── logo/            # Light/dark brand logos, icons, and favicons
+├── scripts/
+│   ├── cloudflare-audit.mts          # Cloudflare zone compliance audit & remediation tool
+│   ├── generate-content-manifest.mjs # Build-time MDX frontmatter validator & indexer
+│   └── publish-content.sh            # Submodule sync, build & Cloudflare deploy script
+└── src/
+    ├── app/             # Next.js App Router (static pages, OG images, sitemap, robots)
+    ├── components/      # Layout, navigation, MDX callouts, cmdk search, blog UI
+    ├── config/          # Central site, topic, author, and navigation definitions
+    ├── lib/             # Content queries, Zod schema, TOC extractor, search, SEO/JSON-LD
+    └── types/           # Domain models
+```
 
-## Content pipeline
+### Key Engineering Decisions
 
-Content loading went through two rewrites, both forced by deploying to
-Cloudflare Workers (see [Deployment](#deployment)) — not stylistic choices,
-so it's worth knowing why both `fs` and `next-mdx-remote` were ruled out:
+1. **Zero Runtime Filesystem or `eval()`:**
+   - [`scripts/generate-content-manifest.mjs`](scripts/generate-content-manifest.mjs) walks `content/blog/**/*.mdx` at build time, validates frontmatter against Zod and EU AI Act Art. 50 rules, and emits `src/lib/content/generated/articles.json`.
+   - Article bodies are compiled at build time via `@next/mdx` dynamic imports rather than runtime `next-mdx-remote`, eliminating runtime `eval()` and shipping static HTML directly from Cloudflare's edge.
+2. **Server/Client Search Split:**
+   - [`src/lib/search/index.ts`](src/lib/search/index.ts) builds the search index on the server at build time, while [`src/lib/search/query.ts`](src/lib/search/query.ts) ships a pure, dependency-free scoring function to the `cmdk` command palette.
+3. **Security & Compliance by Default:**
+   - **Hardened HTTP Headers ([`public/_headers`](public/_headers)):** Strict `Content-Security-Policy`, `Strict-Transport-Security` (HSTS preload), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, and `tdm-reservation: 1` (EU DSM Directive Art. 4 Text and Data Mining opt-out).
+   - **RFC 9116 Security Disclosure ([`public/.well-known/security.txt`](public/.well-known/security.txt)):** Machine-readable vulnerability disclosure endpoint.
+   - **EU AI Act Art. 50 Transparency:** Enforced at build time in [`src/lib/content/schema.ts`](src/lib/content/schema.ts) for all articles dated `>= 2026-08-02`, rendered via [`src/components/blog/ai-disclosure.tsx`](src/components/blog/ai-disclosure.tsx).
 
-1. **Metadata: `fs` at request time → a generated build-time manifest.**
-   `lib/content/articles.ts` used to call `fs.readdirSync`/`readFileSync` on
-   `content/blog` directly, including for routes rendered at request time
-   (`/blog`, `/search`, the root layout's search index — anything not fully
-   static). Workers has no filesystem, and Next's build tracer can't see a
-   dynamically-constructed `fs` path to bundle it, so every such route threw
-   `ENOENT` in production. `scripts/generate-content-manifest.mjs` now reads
-   `content/blog/*.mdx`, validates frontmatter, and writes
-   `src/lib/content/generated/articles.json` (gitignored, regenerated by the
-   `predev`/`prebuild`/`pretest` npm hooks). `articles.ts` imports that JSON
-   statically — a literal `import` is exactly what the bundler *can* trace
-   and include, unlike a runtime `fs` call.
-2. **Rendering: runtime MDX compilation → build-time compilation.**
-   `next-mdx-remote/rsc` compiles MDX source strings into executable code
-   via `new Function()` *at request time* — that's its whole design, for
-   content arriving at runtime (e.g. from a CMS). Workers' V8 sandbox
-   disallows dynamic code generation outright (`EvalError: Code generation
-   from strings disallowed`), with no compatibility flag to opt out — this
-   isn't fixable from application code. The article page now does
-   `await import(\`../../../../content/blog/${article.slug}.mdx\`)` — Next's
-   own [documented pattern](https://nextjs.org/docs/app/guides/mdx#using-dynamic-imports)
-   for dynamic MDX imports. A template-literal import path with a known
-   directory is statically analyzable by webpack/Turbopack (a "context
-   module"), so every file in `content/blog` gets discovered and compiled
-   via `@next/mdx` at build time — no `eval` in the deployed Worker at all.
-   `article.content` (the raw MDX string) still lives in the generated
-   manifest, but only for `extractToc()` — plain regex over markdown text,
-   not compilation.
+---
 
-One consequence: `@next/mdx` doesn't strip YAML frontmatter by default, and
-`content/blog/*.mdx` files have it (for the generator script to parse) — so
-`remark-frontmatter` is in the rehype/remark pipeline specifically to drop
-that block before rendering, or it would leak into the article body as
-literal text.
+## Getting Started
 
-## Adding articles
-
-`content/blog` is a git submodule pointing at
-[`domehahn/agentic-devsecops`](https://github.com/domehahn/agentic-devsecops)
-— articles live in their own repo, independent of the app. `lib/content/articles.ts`
-doesn't know or care that it's a submodule; it just reads whatever `.mdx`
-files are present at `content/blog/*.mdx`.
-
-Cloning this repo for the first time:
+### 1. Clone with Submodules & Install
 
 ```bash
 git clone --recurse-submodules git@github.com:domehahn/agenticstack.git
-# or, if you already cloned without that flag:
-git submodule update --init
+cd agenticstack
+npm ci
 ```
 
-Publishing an article is: create one `.mdx` file. Nothing else.
+*(If already cloned without `--recurse-submodules`, run `git submodule update --init --recursive`.)*
+
+### 2. Development & Quality Gates
+
+| Command | Description |
+| :--- | :--- |
+| `npm run dev` | Regenerates content manifest and starts Next.js local dev server |
+| `npm run generate:content` | Validates `content/blog/**/*.mdx` frontmatter and writes `articles.json` |
+| `npm run build` | Builds the production static export into `out/` |
+| `npm run preview` | Builds and serves `out/` locally via `wrangler dev` |
+| `npm run lint` | Runs ESLint across the repository |
+| `npx tsc --noEmit` | Runs strict TypeScript type-checking |
+| `npm test` | Runs Vitest unit tests (schema, content queries, TOC, search, slugs) |
+| `npm run test:e2e` | Runs Playwright end-to-end browser tests |
+
+---
+
+## Publishing Articles
+
+Articles live in the [`content/blog`](content/blog) submodule ([`domehahn/agentic-devsecops`](https://github.com/domehahn/agentic-devsecops)).
 
 ```bash
-cd content/blog
-cp _template.mdx my-new-article.mdx
-# edit, then commit + push inside content/blog (it's its own git repo)
-git add my-new-article.mdx && git commit -m "Add my-new-article" && git push
-cd ../..
-git add content/blog && git commit -m "Bump content submodule"
+# 1. Create a new article from the template
+cp content/blog/_template.mdx content/blog/my-new-article.mdx
+
+# 2. Edit frontmatter (set draft: false, fill ai transparency block) & write MDX content
+#    See content/blog/README.md for the full frontmatter & component reference.
+
+# 3. Or pull latest articles from the content submodule and deploy in one step:
+./scripts/publish-content.sh
 ```
 
-The filename becomes the URL slug (`/blog/my-new-article`). Fill in the
-frontmatter, write the body, set `draft: false`. Full frontmatter reference,
-available MDX components, and code block syntax are documented in
-[`content/blog/README.md`](content/blog/README.md).
+---
 
-The last `git commit` in the app repo just bumps the submodule's pinned
-commit SHA — that's what makes a new article show up after deploying the
-app repo. Deployment platforms (Vercel, Cloudflare Pages, …) need
-"include submodules" enabled in their git checkout settings, or the build
-will see an empty `content/blog` directory.
+## Deployment & Cloudflare Compliance
 
-### Adding a topic
-
-Topics are centrally defined — add one to `src/config/topics.ts` before
-referencing its slug in an article's frontmatter.
-
-### Adding a series
-
-Give matching `series: { slug, title, order }` frontmatter to each article
-in the series. `/series` and `/series/[slug]` are derived automatically;
-no separate registration.
-
-### Adding an author
-
-Add an entry to `src/config/authors.ts`, then reference its key from an
-article's `author` frontmatter field.
-
-## Configuration
-
-Site name, description, tagline, URL, and social links are all in
-`src/config/site.ts` — nothing else in the codebase hard-codes the brand.
-Primary/footer navigation lives in `src/config/navigation.ts`.
-
-## Development
+The site deploys to Cloudflare Workers Static Assets configured in [`wrangler.jsonc`](wrangler.jsonc) for `agenticstack.eu` and `www.agenticstack.eu`:
 
 ```bash
-npm run dev         # start the dev server
-npm run build        # production build (also runs the TypeScript check)
-npm run start        # serve the production build
-npm run lint          # ESLint
-npx tsc --noEmit       # TypeScript, standalone
-npm run test           # Vitest — lib/content, lib/search, lib/utils
-npm run test:e2e        # Playwright — nav, theme, search, article, mobile menu
+npm run deploy             # Builds static export to out/ and deploys via Wrangler
+npm run production:audit   # Verifies live production HTTP security headers, TLS & security.txt
+npm run cloudflare:audit   # Dry-run audit of Cloudflare zone settings (requires CLOUDFLARE_API_TOKEN)
 ```
 
-Playwright's config builds and serves a production instance on port 3200
-before running (`webServer` in `playwright.config.ts`), so `npm run test:e2e`
-works standalone without a dev server already running.
+---
 
-## SEO
+## License
 
-Every page builds its metadata through `lib/seo/metadata.ts` (canonical URL,
-OpenGraph, Twitter card, optional `noIndex`) so there's one place that
-defines the shape of page metadata. `lib/seo/json-ld.ts` provides `WebSite`,
-`Blog`, `BlogPosting`, and `BreadcrumbList` structured data. `sitemap.ts`,
-`robots.ts`, and `feed.xml` are generated from the same content index as the
-pages themselves — adding an article updates all three automatically.
-
-Social preview images are generated at build time from `lib/seo/og-image.tsx`
-via Next's file conventions: `app/opengraph-image.tsx` is the site-wide
-default (inherited by every page unless overridden), and
-`app/blog/[slug]/opengraph-image.tsx` renders a per-article card (topic,
-title, author, date) for every article via `generateStaticParams`. No static
-image asset to keep in sync, and no server needed to render one at request
-time — `next build`'s static export prerenders each one to a real file
-under `out/`.
-
-## Analytics
-
-`lib/analytics/index.ts` exports a single `trackEvent()` function — the only
-integration point in the app. It's a no-op while `features.analytics` is
-`false` (the default: no vendor configured, nothing loaded). A few real call
-sites (`code_copied`, `search_opened`, `search_query`) already call it, so
-wiring up a provider later means editing the body of `trackEvent()` once,
-not touching every component that reports an event.
-
-## Security
-
-`public/_headers` sets a Content-Security-Policy and the standard hardening
-headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
-`Permissions-Policy`, `Strict-Transport-Security`) on every response. This is
-Cloudflare's [static-assets headers file](https://developers.cloudflare.com/pages/configuration/headers/)
-convention — `wrangler` copies it into `out/` unchanged, and the static-assets
-layer applies its rules to every matching response, no Worker script
-involved.
-
-Headers used to be computed per-request — first in a `proxy.ts` (Next's
-request-interception layer, formerly `middleware.ts`) with a CSP nonce, then
-in `next.config.ts`'s `headers()` once the nonce was dropped. Both stopped
-being options once the app moved to a static export (see
-[Deployment](#deployment)): `output: "export"` prerenders every route to a
-plain file with no server left to run either at request time, so
-`next.config.ts`'s `headers()` is simply never invoked in the deployed site.
-`public/_headers` is the one mechanism that still applies headers to a
-Cloudflare static-assets deployment with no Worker in front of it.
-
-The CSP is `script-src 'self' 'unsafe-inline'`, not `'unsafe-inline'`-free.
-`'unsafe-inline'` still blocks the more common real threat for a
-static-content site like this — an attacker-injected
-`<script src="https://evil.example/x.js">` — since only `'self'` script
-hosts are allowlisted; it just can't additionally block inline script
-execution the way a working nonce setup would.
-
-## Deployment
-
-### Cloudflare Workers
-
-The app deploys as a **pure static site** to Cloudflare's Workers
-static-assets layer — no Worker script, no per-request server, no
-`getCloudflareContext()`/bindings anywhere in the app. `next build` (with
-`output: "export"` in `next.config.ts`) writes plain HTML/JS/CSS to `out/`;
-`wrangler.jsonc` just points `assets.directory` at it:
-
-```bash
-npm run preview   # build + serve out/ once under wrangler, locally
-npm run deploy     # build + deploy out/ to Cloudflare
-```
-
-This replaced an earlier setup that ran the app as a full Next.js SSR server
-via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare)
-(`@opennextjs/cloudflare`, a Worker entry point, service bindings, the
-`keep_names: false` esbuild workaround, etc.). That meant *every* request —
-including the ones serving pages that are static and known at build time —
-ran through a full Workers CPU budget, which tripped the Free plan's 10ms
-per-request limit (`Error 1102`) on ordinary page loads. Nothing in this app
-actually needs per-request server logic (see the CSP/headers note in
-[Security](#security) and the OG-image note in [SEO](#seo) for the two
-places that used to assume a server was there), so static export removes the
-constraint entirely — no Workers Paid plan needed just to serve a blog.
-
-Before deploying:
-
-- Set `site.url` in `src/config/site.ts` to the production domain — it
-  backs canonical URLs, the sitemap, the RSS feed, and JSON-LD.
-- Connect the domain to the Cloudflare account and the `agenticstack`
-  Pages/Workers static-assets project (DNS record + custom domain binding)
-  via the Cloudflare dashboard — that's an account-level step outside this
-  repo.
-
-### Other hosts
-
-Nothing about the app is Cloudflare-specific at the code level, so `out/`
-(the output of `next build`) is also just a static site: any static host —
-Vercel, Netlify, GitHub Pages, a plain CDN — can serve it directly, and the
-`wrangler.jsonc` file can simply be ignored in that case.
+- **Application Source Code:** Licensed under the [MIT License](LICENSE).
+- **Editorial Content & Brand Assets:** Copyright © Dominik Hahn. All Rights Reserved (`tdm-reservation: 1`).
