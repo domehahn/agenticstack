@@ -11,11 +11,11 @@ test("Impressum is reachable and shows required provider details", async ({
   await expect(page.getByText("Raiffeisenstraße 4B").first()).toBeVisible();
   await expect(page.getByText("55491 Büchenbeuren").first()).toBeVisible();
 
-  const emailLink = page.getByRole("link", { name: "aboutdevops@gmail.com" });
+  const emailLink = page.getByRole("link", { name: "info@agenticstack.eu" });
   await expect(emailLink).toBeVisible();
   await expect(emailLink).toHaveAttribute(
     "href",
-    "mailto:aboutdevops@gmail.com",
+    "mailto:info@agenticstack.eu",
   );
 });
 

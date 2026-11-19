@@ -35,7 +35,7 @@ export default function DatenschutzPage() {
           Deutschland
           <br />
           E-Mail:{" "}
-          <a href="mailto:aboutdevops@gmail.com">aboutdevops@gmail.com</a>
+          <a href="mailto:info@agenticstack.eu">info@agenticstack.eu</a>
         </p>
 
         <h2>2. Allgemeine Hinweise zur Datenverarbeitung</h2>

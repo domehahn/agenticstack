@@ -13,7 +13,7 @@ AgenticStack is continuously deployed from the `main` branch to [agenticstack.eu
 We take the security of AgenticStack seriously. If you discover a security vulnerability in the application code, build pipeline, or Cloudflare deployment configuration:
 
 1. **Do not open a public GitHub issue.**
-2. **Report via email:** Send a detailed report to **[aboutdevops@gmail.com](mailto:aboutdevops@gmail.com)** (see also our RFC 9116 disclosure file at [`https://agenticstack.eu/.well-known/security.txt`](https://agenticstack.eu/.well-known/security.txt)).
+2. **Report via email:** Send a detailed report to **[info@agenticstack.eu](mailto:info@agenticstack.eu)** (see also our RFC 9116 disclosure file at [`https://agenticstack.eu/.well-known/security.txt`](https://agenticstack.eu/.well-known/security.txt)).
 3. **Include details:** Provide affected URLs or file paths, reproduction steps, and potential impact.
 
 We aim to acknowledge receipt of vulnerability reports within **48 hours** and provide a remediation timeline after initial triage.

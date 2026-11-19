@@ -27,7 +27,7 @@ export default function ImpressumPage() {
         <h2>Kontakt</h2>
         <p>
           E-Mail:{" "}
-          <a href="mailto:aboutdevops@gmail.com">aboutdevops@gmail.com</a>
+          <a href="mailto:info@agenticstack.eu">info@agenticstack.eu</a>
         </p>
 
         <h2>Redaktionell verantwortlich</h2>
